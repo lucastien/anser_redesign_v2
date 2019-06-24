@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>AnserMain.qml</file>
+        <file>AnserMenuBar.qml</file>
+        <file>AnserToolBar.qml</file>
+        <file>AnserBodyContent.qml</file>
+        <file>AnserFooterBar.qml</file>
+    </qresource>
+</RCC>
