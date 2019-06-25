@@ -35,8 +35,11 @@ ApplicationWindow {
     }
 
     TubeHandler{
-        id: tubeH
-        onTubeLoaded: updateStripChart()
+        id: tubeH       
+        onTubeLoaded:{
+            console.log("On tube loaded event")
+            updateStripChart()
+        }
     }
 
     TlistWindow{

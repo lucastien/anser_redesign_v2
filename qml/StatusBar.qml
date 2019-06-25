@@ -29,8 +29,8 @@ Pane {
     RowLayout {
         id: statusBarLayout
         objectName: "statusBarLayout"
-        width: canvas ? canvas.firstPane.size * canvas.width - statusBarPane.padding * 2 : parent.width
-        visible: project && canvas && project.loaded
+        width: parent.width
+        visible: true
         anchors.verticalCenter: parent.verticalCenter
 
         Label {
@@ -46,14 +46,8 @@ Pane {
         Label {
             id: cursorPixelPosLabel
             objectName: "cursorPixelPosLabel"
-            text: {
-                if (!canvas)
+            text: {                
                     return "-1, -1";
-
-                if (canvas.hasOwnProperty("cursorTilePixelX"))
-                    return canvas.cursorTilePixelX + ", " + canvas.cursorTilePixelY;
-
-                return canvas.cursorSceneX + ", " + canvas.cursorSceneY;
             }
 
             // Specify a fixed size to avoid causing items to the right of us jumping
@@ -145,7 +139,7 @@ Pane {
 
         ToolSeparator {
             padding: 0
-            visible: fpsCounter.visible && (lineLengthLabel.visible || selectionSizeLabel.visible)
+            visible: true
 
             Layout.fillHeight: true
             Layout.maximumHeight: 24

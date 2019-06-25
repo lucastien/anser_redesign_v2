@@ -11,6 +11,11 @@ Item {
     property var points
     property int currentChan: 3
     property int xavg_p: 0
+    property alias stripWidth: stripArea.width
+    property alias stripHeight: stripArea.height
+    property bool enablePaintStrip: false
+    property alias cursorY: cursorRect.y
+    property int expStripWidth
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
@@ -41,9 +46,10 @@ Item {
                             currentChan = 0;
                         else if(currentChan < 0)
                             currentChan = 9;
-
-                        console.log("Switch to channel " + currentChan)
-                        drawStrip()
+                        if(points){
+                            console.log("Switch to channel " + currentChan)
+                            drawStrip()
+                        }
                     }
                 }
 
@@ -51,6 +57,7 @@ Item {
         }
 
         Rectangle{
+            id: stripArea
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -59,22 +66,57 @@ Item {
             z: myCanvas.z + 1
             Canvas{
                 id: myCanvas
+
                 anchors.fill:parent
 
-                onPaint: paintStripChart()
+                onPaint:{
+                    paintStripChart()
+                }
                 MouseArea{
                     anchors.fill: parent
                     onClicked:{
                         if((mouse.button === Qt.LeftButton) && (mouse.modifiers & Qt.ControlModifier)){
-                            xavg_p = mouseY;
+                            stripChart.xavg_p = mouseY;
                             drawStrip();
                         }
                     }
                 }
             }
+
+            Rectangle{
+                id: cursorRect
+                width: stripArea.width
+                height: 50
+                color: "#e60707"
+                opacity: 0.8
+                x: 0
+                y: stripArea.height/2
+                MouseArea {
+                    anchors.fill: parent
+                    drag.target: cursorRect
+                    drag.axis: Drag.YAxis
+                    drag.minimumY: 0
+                    drag.maximumY: stripArea.height - cursorRect.height
+                }
+            }
         }
     }
 
+    Connections{
+        target: tube
+        onScaleChanged: {
+            var centPix = cursorRect.y + cursorRect.height/2
+            tube.getCursorWidth(centPix, stripChart.expStripWidth)
+            drawStrip();
+        }
+    }
+
+    Connections{
+        target: tube
+        onCursorWidthChanged: {
+            cursorRect.height = tube.cursorWidth
+        }
+    }
 
     function clearCanvas(){
         console.log("Clear the canvas");
@@ -85,10 +127,10 @@ Item {
     }
 
     function drawStrip(){
-        console.log("Call drawing stripchart")
+        console.log("Call drawing stripchart on channel " + currentChan)
         if(tube){
-            clearCanvas()
-            points = tube.getDrawPointList(currentChan, xavg_p, myCanvas.width, myCanvas.height);
+            //clearCanvas()
+            enablePaintStrip = true
             myCanvas.requestPaint();
         }
     }
@@ -96,12 +138,14 @@ Item {
         return tube.getPoint(p);
     }
     function paintStripChart(){
-        console.log("Paint strip chart")
-        if(points > 0){
+        console.log("Paint strip chart channel " + currentChan)
+        if(enablePaintStrip){
             var ctx = myCanvas.getContext("2d")
+            ctx.reset()
             ctx.lineWidth = 1;
             ctx.strokeStyle = "white"
             ctx.beginPath()
+            points = tube.getDrawPointList(currentChan, xavg_p);
             for(var i = 0; i < points - 1; i++){
                 var point = getPoint(i)
                 var nextPoint = getPoint(i+1);
@@ -109,11 +153,19 @@ Item {
                 ctx.lineTo(nextPoint.x, nextPoint.y)
             }
             ctx.stroke()
+            enablePaintStrip = false
         }
-    }
-    Component.onCompleted: {
-        console.log("Strip chart initialize")
-
     }
 
 }
+
+
+
+
+
+
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/

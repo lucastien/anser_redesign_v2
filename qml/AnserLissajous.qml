@@ -8,7 +8,7 @@ import TubeHandler 1.0
 
 Item {
     id: lissajousItem
-
+    property alias expWidth: expandStripChart.width
     ColumnLayout{
         anchors.fill: parent
         spacing: 0

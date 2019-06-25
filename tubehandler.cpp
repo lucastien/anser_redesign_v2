@@ -16,6 +16,8 @@ TubeHandler::TubeHandler(QObject *parent) : QObject(parent),
     m_chan(nullptr),
     tubeFile(QString())
 {
+    m_scale = 1;
+    m_cursorWidth = 0;
     qDebug() << "Tube handler init";
 }
 
@@ -29,7 +31,57 @@ QString TubeHandler::getTubeFile()
     return tubeFile;
 }
 
-int formatBuff(TubeData *tube, char *buff,int nbyte)
+int TubeHandler::getScale() const
+{
+    return m_scale;
+}
+
+void TubeHandler::setScale(const int scale)
+{
+    if(m_scale != scale){
+        m_scale = scale;
+        Q_EMIT scaleChanged();
+    }
+}
+
+int TubeHandler::getStripWidth() const
+{
+    return m_stripWidth;
+}
+
+void TubeHandler::setStripWidth(const int width)
+{
+    if(m_stripWidth != width){
+        m_stripWidth = width;
+        Q_EMIT stripWidthChanged();
+    }
+}
+
+int TubeHandler::getStripHeight() const
+{
+    return m_stripHeight;
+}
+
+void TubeHandler::setStripHeight(const int height)
+{
+    if(m_stripHeight != height){
+        m_stripHeight = height;
+        Q_EMIT stripHeightChanged();
+    }
+}
+
+int TubeHandler::getCursorWidth() const
+{
+    return m_cursorWidth;
+}
+
+inline int stripY(const int hs, const int tp, const int pt, const int scale)
+{
+    int y = (hs - 1) - (pt - tp)/scale;
+    return y;
+}
+
+static int formatBuff(TubeData *tube, char *buff,int nbyte)
 {
     int n=0;
     short *p,*q;
@@ -66,28 +118,25 @@ int formatBuff(TubeData *tube, char *buff,int nbyte)
 
 
 int TubeHandler::getDrawPointList(const int chan,
-                                  const int xavg_p,
-                                  const int width,
-                                  const int height)
+                                  const int xavg_p)
 {
     Q_ASSERT(!m_tube.isNull() || m_tube->channels.find(chan) != m_tube->channels.end());
-    qDebug() << "Chan idx:" << chan << " Xvag_point: " << xavg_p << " Width: " << width << " height: " << height;
+    qDebug() << "Chan idx:" << chan << " Xvag_point: " << xavg_p << " Width: " << m_stripWidth << " height: " << m_stripHeight;
     int j;
     int cent,x0,x,xmax,xmin;
     int a,b,c,vxavg,vyavg;
     int pix;
     int pt0;
     vxavg = vyavg = 0;
-
-    int scale = m_tube->raw_npt/height + 1;
-
-    pt0 = scale * height - 1;
+    const int scaleMax = maxScale(m_stripHeight);
+    if(m_scale > scaleMax) m_scale = scaleMax;
+    pt0 = m_scale * m_stripHeight - 1;
 
     const int FACTOR = 100;
     float theta = M_PI * 0/180.0;
     const int span = 2784;
-    a = -(FACTOR * width * qSin(theta));
-    b = FACTOR * width * qCos(theta);
+    a = -(FACTOR * m_stripWidth * qSin(theta));
+    b = FACTOR * m_stripWidth * qCos(theta);
     c = FACTOR * span;
 
     Channel& channel = m_tube->channels[chan];
@@ -108,11 +157,10 @@ int TubeHandler::getDrawPointList(const int chan,
            vxavg = data.x();
            vyavg = data.y();
            qDebug() << "Found point map " << xavg_p << "=" << vxavg;
-
         }
     }
 
-    cent = width/2;
+    cent = m_stripWidth/2;
 
     if(pt0 >= 0 && pt0 < m_tube->npt)
         {
@@ -127,11 +175,11 @@ int TubeHandler::getDrawPointList(const int chan,
     points.clear();
     points.push_back(QPoint(x0, pix));
 
-    while(pix < height)
+    while(pix < m_stripHeight)
         {
 /* find the min and max on this pixel */
         x = xmin = xmax = x0;
-        for(j = 1; j < scale; ++j)
+        for(j = 1; j < m_scale; ++j)
             {
             if(pt0 >= 0 && pt0 < m_tube->npt)
                 {
@@ -170,6 +218,31 @@ QPoint TubeHandler::getPoint(const int i)
 {
     if(i < 0 || i >= points.size()) return QPoint(0, 0);
     return points[i];
+}
+
+int TubeHandler::maxScale(const int height) const
+{
+    if (m_tube.data()) {
+        return m_tube->raw_npt/height;
+    }
+    return -1;
+}
+
+int TubeHandler::getCursorWidth(const int currentPix, const int expWidth)
+{
+    if(pointMap.find(currentPix) == pointMap.end()){
+        qDebug() << "Not found valid data point";
+        return 0;
+    }
+
+    int center = pointMap[currentPix];
+    int expTp = center - expWidth/2;
+
+    int cymin = stripY(m_stripHeight, 0, expTp+expWidth-1, m_scale);
+    int cymax = stripY(m_stripHeight, 0, expTp, m_scale);
+    m_cursorWidth = abs(cymax - cymin);
+    Q_EMIT cursorWidthChanged();
+    return m_cursorWidth;
 }
 
 void TubeHandler::setTubeFile(const QString &path)
