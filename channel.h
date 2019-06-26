@@ -12,7 +12,7 @@ public:
     Channel(const Channel& ch); //copy constructor
     void add(const short x, const short y);
     void clear();
-    QPoint &at(const int i);
+    const QPoint &at(const int i) const;
     ChannelParam &getCp();
     const QVector<QPoint> &getData() const;
 private:

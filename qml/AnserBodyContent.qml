@@ -10,6 +10,8 @@ Item {
         console.log("Strip chart initialize")
         tube.stripWidth = strip_1.stripWidth
         tube.stripHeight = strip_1.stripHeight
+        tube.expHeight = liss_1.expHeight
+        tube.expWidth = liss_1.expWidth
     }
 
     RowLayout{
@@ -27,7 +29,7 @@ Item {
             id: strip_1
             width: 150
             Layout.fillHeight: true
-            expStripWidth: liss_1.expWidth
+            expStripHeight: liss_1.expWidth
             tube: stripContentItem.tube
         }
         AnserStripChart{
@@ -35,7 +37,7 @@ Item {
             width: 150
             Layout.fillHeight: true
             currentChan: 4
-            expStripWidth: liss_1.expWidth
+            expStripHeight: liss_1.expWidth
             tube: stripContentItem.tube
         }
         AnserStripChart{
@@ -43,28 +45,31 @@ Item {
             width: 150
             currentChan: 5
             Layout.fillHeight: true
-            expStripWidth: liss_1.expWidth
+            expStripHeight: liss_1.expWidth
             tube: stripContentItem.tube
         }
         AnserLissajous{
             id: liss_1
             Layout.fillWidth: true
             Layout.fillHeight: true
+            channel: strip_1.currentChan
+            tube: stripContentItem.tube
+
         }
         AnserLissajous{
             id: liss_2
             Layout.fillWidth: true
             Layout.fillHeight: true
+            channel: strip_2.currentChan
+            tube: stripContentItem.tube
         }
         AnserLissajous{
             id: liss_3
             Layout.fillWidth: true
             Layout.fillHeight: true
+            channel: strip_3.currentChan
+            tube: stripContentItem.tube
         }
-//        Item {
-//            Layout.fillHeight: true
-//            Layout.fillWidth: true
-//        }
     }
 
     Connections{
@@ -72,6 +77,8 @@ Item {
         onCursorYChanged: {
             strip_2.cursorY = strip_1.cursorY
             strip_3.cursorY = strip_1.cursorY
+            var center = strip_1.cursorY + strip_1.cursorWidth/2;
+            updateDpt(center)
         }
     }
 
@@ -80,6 +87,8 @@ Item {
         onCursorYChanged: {
             strip_1.cursorY = strip_2.cursorY
             strip_3.cursorY = strip_2.cursorY
+            var center = strip_2.cursorY + strip_2.cursorWidth/2;
+            updateDpt(center)
         }
     }
 
@@ -88,9 +97,15 @@ Item {
         onCursorYChanged: {
             strip_1.cursorY = strip_3.cursorY
             strip_2.cursorY = strip_3.cursorY
+            var center = strip_3.cursorY + strip_3.cursorWidth/2;
+            updateDpt(center)
         }
     }
 
+    function updateDpt(centerCursor){
+        anserFooterBar.dpt = tube.pixToDpt(centerCursor);
+        tube.expTp = anserFooterBar.dpt - tube.expHeight/2
+    }
 
     function updateStripChart(){
         strip_1.drawStrip()

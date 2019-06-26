@@ -90,10 +90,6 @@ ApplicationWindow {
 
     }
 
-    function getDataPoints(chan, xavg_p, w, h){
-        return tlistToolBar.getDataPoints(chan, xavg_p, w, h)
-    }
-
     function getPoint(p){
         return tlistToolBar.getPoint(p)
     }

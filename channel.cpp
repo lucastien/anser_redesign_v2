@@ -23,7 +23,7 @@ void Channel::clear()
     m_Data.clear();
 }
 
-QPoint &Channel::at(const int i)
+const QPoint &Channel::at(const int i) const
 {
     if(m_Data.isEmpty() || i < 0 || i >= m_Data.size())
         throw QObject::tr("Index out of points array");

@@ -72,19 +72,8 @@ ToolBar{
                 console.log("The tube was loaded successfully")
             }
         }
-//        if(tlistWindow.tube && tlistWindow.loadTube()){
-
-//            //anserMainWindow.channel = tubeHandler.channel
-//            if(!anserMainWindow.visible)
-//                anserMainWindow.show()
-//            else
-//                anserMainWindow.drawStrip()
-//        }
     }
 
-    function getDataPoints(chan, xavg_p, w, h){
-        return tubeHandler.getDrawPointList(chan,xavg_p, w, h)
-    }
 
     function getPoint(p){
         return tubeHandler.getPoint(p);

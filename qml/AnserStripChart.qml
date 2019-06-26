@@ -15,7 +15,10 @@ Item {
     property alias stripHeight: stripArea.height
     property bool enablePaintStrip: false
     property alias cursorY: cursorRect.y
-    property int expStripWidth
+    property alias cursorWidth: cursorRect.height
+    property int expStripHeight
+
+
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
@@ -91,6 +94,8 @@ Item {
                 opacity: 0.8
                 x: 0
                 y: stripArea.height/2
+                onYChanged: stripChart.cursorY = y
+                onHeightChanged: stripChart.cursorWidth = height;
                 MouseArea {
                     anchors.fill: parent
                     drag.target: cursorRect
@@ -106,7 +111,7 @@ Item {
         target: tube
         onScaleChanged: {
             var centPix = cursorRect.y + cursorRect.height/2
-            tube.getCursorWidth(centPix, stripChart.expStripWidth)
+            tube.getCursorWidth(centPix, stripChart.expStripHeight)
             drawStrip();
         }
     }

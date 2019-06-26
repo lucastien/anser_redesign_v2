@@ -10,6 +10,7 @@ Pane {
     contentHeight: statusBarLayout.implicitHeight
     padding: 6
 
+    property int dpt: -1
 
     Rectangle {
         parent: statusBarPane.background
@@ -121,7 +122,7 @@ Pane {
         Label {
             id: lineLengthLabel
             objectName: "lineLengthLabel"
-            text: "100"
+            text: "DP: " + dpt
             visible: true
 
             Layout.minimumWidth: lineLengthMaxTextMetrics.width

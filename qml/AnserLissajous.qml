@@ -8,7 +8,10 @@ import TubeHandler 1.0
 
 Item {
     id: lissajousItem
-    property alias expWidth: expandStripChart.width
+    property alias expWidth: expandStripChart.expWidth
+    property alias expHeight: expandStripChart.expHeight
+    property int channel
+    property TubeHandler tube
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
@@ -50,6 +53,8 @@ Item {
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignBottom
+            tube: lissajousItem.tube
+            channel: lissajousItem.channel
         }
     }
 }

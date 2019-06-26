@@ -18,6 +18,7 @@ TubeHandler::TubeHandler(QObject *parent) : QObject(parent),
 {
     m_scale = 1;
     m_cursorWidth = 0;
+    m_expTp = 0;
     qDebug() << "Tube handler init";
 }
 
@@ -81,6 +82,12 @@ inline int stripY(const int hs, const int tp, const int pt, const int scale)
     return y;
 }
 
+inline int stripPoint(const int y, const int height, const int scale){
+    int sc_tp = 0;// temporary set sc_tp = 0
+    int pt  = sc_tp + (height-1-y) * scale;
+    return pt;
+}
+
 static int formatBuff(TubeData *tube, char *buff,int nbyte)
 {
     int n=0;
@@ -124,7 +131,8 @@ int TubeHandler::getDrawPointList(const int chan,
     qDebug() << "Chan idx:" << chan << " Xvag_point: " << xavg_p << " Width: " << m_stripWidth << " height: " << m_stripHeight;
     int j;
     int cent,x0,x,xmax,xmin;
-    int a,b,c,vxavg,vyavg;
+    int a,b,c;
+    short vxavg,vyavg;
     int pix;
     int pt0;
     vxavg = vyavg = 0;
@@ -142,24 +150,18 @@ int TubeHandler::getDrawPointList(const int chan,
     Channel& channel = m_tube->channels[chan];
 
     //cal xavg point
-    if(xavg_p <= 0){
-        pointMap.clear();
-        for (int i = 0; i < m_tube->raw_npt; i++) {
-            const QPoint& data = channel.at(i);
-            vxavg += data.x();
-            vyavg += data.y();
-        }
-        vxavg = vxavg/m_tube->raw_npt;
-        vyavg = vyavg/m_tube->raw_npt;
+    int dpt = stripPoint(xavg_p, m_stripHeight, m_scale);
+    if(dpt < 0 || dpt >= channel.getData().size()){ //invalid dpt then calculate avg data
+        calAvgData(channel, vxavg, vyavg);
     }else{
-        if(pointMap.find(xavg_p) != pointMap.end()){
-            const QPoint& data = channel.at(pointMap[xavg_p]);
-           vxavg = data.x();
-           vyavg = data.y();
-           qDebug() << "Found point map " << xavg_p << "=" << vxavg;
-        }
+       const QPoint& data = channel.at(dpt);
+       vxavg = static_cast<short>(data.x());
+       vyavg = static_cast<short>(data.y());
     }
-
+    ChannelParam& cp = channel.getCp();
+    cp.xavg = vxavg;
+    cp.yavg = vyavg;
+    pix = 0;
     cent = m_stripWidth/2;
 
     if(pt0 >= 0 && pt0 < m_tube->npt)
@@ -169,9 +171,8 @@ int TubeHandler::getDrawPointList(const int chan,
     else
         x0 = cent;
     pt0--;
-
 /* move to first point */
-    pix = 0;
+
     points.clear();
     points.push_back(QPoint(x0, pix));
 
@@ -188,7 +189,6 @@ int TubeHandler::getDrawPointList(const int chan,
             else
                 x = cent;
             pt0--;
-
             if(x < xmin)
                 xmin = x;
             else if(x > xmax)
@@ -201,9 +201,8 @@ int TubeHandler::getDrawPointList(const int chan,
             }
         else
             x0 = cent;
-        pointMap[pix] = pt0;
-        pt0--;
 
+        pt0--;
         points.push_back(QPoint(xmin, pix));
         points.push_back(QPoint(xmax, pix));
         points.push_back(QPoint(x, pix));
@@ -220,6 +219,12 @@ QPoint TubeHandler::getPoint(const int i)
     return points[i];
 }
 
+QPoint TubeHandler::getExpPoint(const int i)
+{
+    if(i < 0 || i >= ePoints.size()) return QPoint(0, 0);
+    return ePoints[i];
+}
+
 int TubeHandler::maxScale(const int height) const
 {
     if (m_tube.data()) {
@@ -230,20 +235,80 @@ int TubeHandler::maxScale(const int height) const
 
 int TubeHandler::getCursorWidth(const int currentPix, const int expWidth)
 {
-    if(pointMap.find(currentPix) == pointMap.end()){
-        qDebug() << "Not found valid data point";
-        return 0;
-    }
 
-    int center = pointMap[currentPix];
+    int center = stripPoint(currentPix, m_stripHeight, m_scale);
+
     int expTp = center - expWidth/2;
 
     int cymin = stripY(m_stripHeight, 0, expTp+expWidth-1, m_scale);
     int cymax = stripY(m_stripHeight, 0, expTp, m_scale);
     m_cursorWidth = abs(cymax - cymin);
     Q_EMIT cursorWidthChanged();
+    qDebug() << "m_cursorWidth = " << m_cursorWidth;
     return m_cursorWidth;
 }
+
+int TubeHandler::pixToDpt(const int pix)
+{
+    return stripPoint(pix, m_stripHeight, m_scale);
+}
+
+int TubeHandler::calExpPoints(const int chan, bool leftside)
+{
+    int k;
+    short base;
+    int a,b,c,vxavg,vyavg,cent;
+    int vx,vy,pnt;
+    int x1, y1;
+
+    if(m_expHeight < 2)
+        return 0;
+    if(m_tube.data() == nullptr ||
+       m_tube->channels.find(chan) == m_tube->channels.end())
+    {
+        return 0;
+    }
+
+    /* get raw data pointers */
+    Channel& channel = m_tube->channels[chan];
+    ChannelParam& cp = channel.getCp();
+    if(cp.xavg == 0){
+        calAvgData(channel, cp.xavg, cp.yavg);
+    }
+    vxavg = cp.xavg;
+    vyavg = cp.yavg;
+
+
+    /* get transformation coefficients */
+    const int FACTOR = 100;
+    float theta = M_PI * 0/180.0;
+    const int span = 2784;
+    a = FACTOR * m_expWidth * cos(theta);
+    b = FACTOR * m_expWidth * sin(theta);
+    c = FACTOR * span;
+
+    cent = m_expWidth/2;
+    if (c==0) c=1;
+
+    /* setup y coordinates */
+    base = (m_expHeight-1);
+    pnt = m_expTp;
+    ePoints.clear();
+    for(k = 0; k < m_expHeight; ++k){
+        y1 = base--;
+        vx = channel.at(pnt).x() - vxavg;
+        vy = channel.at(pnt).y() - vyavg;
+        if(leftside){
+            x1 = cent + (-b*vx + a*vy)/c;
+        }else {
+            x1 = cent + (a*vx + b*vy)/c;
+        }
+        ePoints.push_back(QPoint(x1, y1));
+        if(++pnt >= m_tube->raw_npt) pnt = 0;
+    }
+    return ePoints.size();
+}
+
 
 void TubeHandler::setTubeFile(const QString &path)
 {
@@ -337,6 +402,59 @@ int TubeHandler::initTube(const int npt)
     m_tube->raw_npt = m_tube->npt = npt;
     sizeNpt(m_tube.data());
     return 1;
+}
+
+void TubeHandler::calAvgData(const Channel& channel, short &vxavg, short &vyavg) const
+{
+    for (int i = 0; i < m_tube->raw_npt; i++) {
+        const QPoint& data = channel.at(i);
+        vxavg += data.x();
+        vyavg += data.y();
+    }
+    vxavg = vxavg/m_tube->raw_npt;
+    vyavg = vyavg/m_tube->raw_npt;
+}
+
+int TubeHandler::getExpHeight() const
+{
+    return m_expHeight;
+}
+
+void TubeHandler::setExpHeight(int expHeight)
+{
+    if(m_expHeight != expHeight){
+        m_expHeight = expHeight;
+        Q_EMIT expHeightChanged();
+    }
+
+}
+
+int TubeHandler::getExpWidth() const
+{
+    return m_expWidth;
+}
+
+void TubeHandler::setExpWidth(int expWidth)
+{
+    if(m_expWidth != expWidth){
+        m_expWidth = expWidth;
+        Q_EMIT expWidthChanged();
+    }
+
+}
+
+int TubeHandler::getExpTp() const
+{
+    return m_expTp;
+}
+
+void TubeHandler::setExpTp(int expTp)
+{
+    if(m_expTp != expTp){
+        m_expTp = expTp;
+        Q_EMIT expTpChanged();
+    }
+
 }
 
 int TubeHandler::sizeHeader(TubeHeader *hdr, QDataStream &in)

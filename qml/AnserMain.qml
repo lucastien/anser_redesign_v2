@@ -31,7 +31,7 @@ ApplicationWindow {
 
 
     footer: AnserFooterBar{
-
+        id: anserFooterBar
     }
 
     TubeHandler{
@@ -40,6 +40,7 @@ ApplicationWindow {
             console.log("On tube loaded event")
             updateStripChart()
         }
+
     }
 
     TlistWindow{
