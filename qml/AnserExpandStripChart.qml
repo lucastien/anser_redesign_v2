@@ -13,15 +13,16 @@ Item {
     property TubeHandler tube
     property bool enableDrawing: false
     property int channel
-    RowLayout{
+    property int expWin: 20
+    Rectangle{
+        id: xyComp
         anchors.fill: parent
-        spacing: 0
         Rectangle{
             id: xComp
-            Layout.fillHeight: true
-            Layout.alignment: Qt.AlignLeft
+            height: xyComp.height
+            width: xyComp.width/2
+            anchors.left: xyComp.left
             color: "black"
-            Layout.fillWidth: true
             border.color: "white"
             Canvas{
                 id: xExpCanvas
@@ -31,10 +32,10 @@ Item {
         }
         Rectangle{
             id: yComp
-            Layout.fillHeight: true
-            Layout.alignment: Qt.AlignRight
+            height: xyComp.height
+            width: xyComp.width/2
+            anchors.left: xComp.right
             color: "black"
-            Layout.fillWidth: true
             border.color: "white"
             Canvas{
                 id: yExpCanvas
@@ -42,6 +43,32 @@ Item {
                 onPaint: drawExpChart(false)
             }
         }
+        Canvas{
+            id: winExpCanvas
+            anchors.fill: parent
+            onPaint: drawExpWin()
+            MouseArea{
+                id: expMouse
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                propagateComposedEvents: true                
+                hoverEnabled: true
+                property bool rightButton: false
+                onPressed: {
+                    if(mouse.button === Qt.RightButton){
+                        rightButton = true;
+                        updateExpWin(mouseY)
+                    }
+                }
+                onReleased: rightButton = false
+                onPositionChanged: {
+                    if(rightButton){
+                        updateExpWin(mouseY)
+                    }
+                }
+            }
+        }
+
     }
 
     Connections{
@@ -49,11 +76,40 @@ Item {
         onExpTpChanged: updateExpChart()
     }
 
+    function requestUpdateExpWin(){
+        winExpCanvas.requestPaint()
+    }
+
+    function updateExpWin(mouseY){
+        expandStripChart.expWin = Math.abs(xyComp.height/2 - mouseY)
+        tube.npt = expandStripChart.expWin * 2
+        tube.pt0 = tube.expTp + tube.expHeight/2 - expandStripChart.expWin;
+        winExpCanvas.requestPaint()
+    }
+
     function updateExpChart(){
-        console.log("Call drawing expand strip chart for channel" + channel)
         enableDrawing = true;
         xExpCanvas.requestPaint();
         yExpCanvas.requestPaint();
+    }
+
+    function drawExpWin(){
+        var ctx = winExpCanvas.getContext("2d")
+        ctx.reset()
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "red"
+        ctx.beginPath()
+        //draw center line
+        ctx.moveTo(0, xyComp.height/2);
+        ctx.lineTo(xyComp.width, xyComp.height/2)
+        //draw lower line
+        ctx.moveTo(0, xyComp.height/2 + expWin);
+        ctx.lineTo(xyComp.width, xyComp.height/2 + expWin)
+        //draw upper line
+        ctx.moveTo(0, xyComp.height/2 - expWin);
+        ctx.lineTo(xyComp.width, xyComp.height/2 - expWin)
+
+        ctx.stroke()
     }
 
     function drawExpChart(left)
@@ -86,6 +142,26 @@ Item {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

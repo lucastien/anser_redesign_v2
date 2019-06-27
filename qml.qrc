@@ -21,5 +21,6 @@
         <file>qml/AnserLissajous.qml</file>
         <file>qml/StatusBar.qml</file>
         <file>qml/AnserLocBar.qml</file>
+        <file>qml/ChannelScroller.qml</file>
     </qresource>
 </RCC>

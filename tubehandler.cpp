@@ -225,6 +225,12 @@ QPoint TubeHandler::getExpPoint(const int i)
     return ePoints[i];
 }
 
+QPoint TubeHandler::getLissPoint(const int i)
+{
+    if(i < 0 || i >= lPoints.size()) return QPoint(0, 0);
+    return lPoints[i];
+}
+
 int TubeHandler::maxScale(const int height) const
 {
     if (m_tube.data()) {
@@ -307,6 +313,62 @@ int TubeHandler::calExpPoints(const int chan, bool leftside)
         if(++pnt >= m_tube->raw_npt) pnt = 0;
     }
     return ePoints.size();
+}
+
+int TubeHandler::calLissPoints(const int chan)
+{
+    register int k;
+    int a,b,c,xcent,ycent;
+    int vx,vy,vxavg,vyavg;
+    int x1, y1;
+    if(m_Npt < 2)
+        return 0;
+    if(m_tube.data() == nullptr ||
+       m_tube->channels.find(chan) == m_tube->channels.end())
+    {
+        return 0;
+    }
+    /* get raw data pointers */
+    Channel& channel = m_tube->channels[chan];
+    ChannelParam& cp = channel.getCp();
+    if(cp.xavg == 0){
+        calAvgData(channel, cp.xavg, cp.yavg);
+    }
+    vxavg = cp.xavg;
+    vyavg = cp.yavg;
+    /* get transformation coefficients */
+    const int FACTOR = 100;
+    float theta = M_PI * 0/180.0;
+    const int span = 2784;
+    a = FACTOR * m_lissWidth * cos(theta);
+    b = FACTOR * m_lissWidth * sin(theta);
+    c = FACTOR * span;
+
+    if( c==0) c=1;
+    xcent = m_lissWidth/2;
+    ycent = m_lissHeight/2;
+
+    /* find points (NOTE: positive y axis points downward) */
+    int pt0 = m_Pt0;
+
+
+
+    // preset points for XDrawLine routine
+
+
+    lPoints.clear();
+    for(k = 0; k < m_Npt; ++k)
+    {
+        if(++pt0 >= m_tube->npt) pt0=0;
+
+        vx = channel.at(pt0).x() - vxavg;
+        vy = channel.at(pt0).y() - vyavg;
+        x1 = xcent + (a*vx + b*vy)/c;
+        y1 = ycent + (b*vx - a*vy)/c;
+        lPoints.push_back(QPoint(x1, y1));
+    }
+
+    return lPoints.size();
 }
 
 
@@ -413,6 +475,58 @@ void TubeHandler::calAvgData(const Channel& channel, short &vxavg, short &vyavg)
     }
     vxavg = vxavg/m_tube->raw_npt;
     vyavg = vyavg/m_tube->raw_npt;
+}
+
+int TubeHandler::getNpt() const
+{
+    return m_Npt;
+}
+
+void TubeHandler::setNpt(int Npt)
+{
+    if(m_Npt != Npt){
+        m_Npt = Npt;
+        Q_EMIT nptChanged();
+    }
+}
+
+int TubeHandler::getPt0() const
+{
+    return m_Pt0;
+}
+
+void TubeHandler::setPt0(int Pt0)
+{
+    if(m_Pt0 != Pt0){
+        m_Pt0 = Pt0;
+        Q_EMIT pt0Changed();
+    }
+}
+
+int TubeHandler::getLissHeight() const
+{
+    return m_lissHeight;
+}
+
+void TubeHandler::setLissHeight(int lissHeight)
+{
+    if(m_lissHeight != lissHeight){
+        m_lissHeight = lissHeight;
+        Q_EMIT lissHeightChanged();
+    }
+}
+
+int TubeHandler::getLissWidth() const
+{
+    return m_lissWidth;
+}
+
+void TubeHandler::setLissWidth(int lissWidth)
+{
+    if(m_lissWidth != lissWidth){
+        m_lissWidth = lissWidth;
+        Q_EMIT lissWidthChanged();
+    }
 }
 
 int TubeHandler::getExpHeight() const

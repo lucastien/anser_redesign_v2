@@ -6,12 +6,15 @@ Item {
     id: stripContentItem
     property TubeHandler tube
 
+
     Component.onCompleted: {
         console.log("Strip chart initialize")
         tube.stripWidth = strip_1.stripWidth
         tube.stripHeight = strip_1.stripHeight
         tube.expHeight = liss_1.expHeight
         tube.expWidth = liss_1.expWidth
+        tube.lissWidth = liss_1.lissWidth
+        tube.lissHeight = liss_1.lissHeight
     }
 
     RowLayout{
@@ -31,6 +34,10 @@ Item {
             Layout.fillHeight: true
             expStripHeight: liss_1.expWidth
             tube: stripContentItem.tube
+            onScaleChanged: {
+                console.log("scale changed")
+                locBar.changeScale(inc)
+            }
         }
         AnserStripChart{
             id: strip_2
@@ -39,6 +46,9 @@ Item {
             currentChan: 4
             expStripHeight: liss_1.expWidth
             tube: stripContentItem.tube
+            onScaleChanged: {
+                locBar.changeScale(inc)
+            }
         }
         AnserStripChart{
             id: strip_3
@@ -47,6 +57,9 @@ Item {
             Layout.fillHeight: true
             expStripHeight: liss_1.expWidth
             tube: stripContentItem.tube
+            onScaleChanged: {
+                locBar.changeScale(inc)
+            }
         }
         AnserLissajous{
             id: liss_1
@@ -102,9 +115,37 @@ Item {
         }
     }
 
+    Connections{
+        target: liss_1
+        onExpWinChanged:{
+            liss_2.expWin = liss_3.expWin = liss_1.expWin
+            liss_2.updateExpWin()
+            liss_3.updateExpWin()
+        }
+    }
+
+    Connections{
+        target: liss_2
+        onExpWinChanged:{
+            liss_1.expWin = liss_3.expWin = liss_2.expWin
+            liss_1.updateExpWin()
+            liss_3.updateExpWin()
+        }
+    }
+    Connections{
+        target: liss_3
+        onExpWinChanged:{
+            liss_2.expWin = liss_1.expWin = liss_3.expWin
+            liss_2.updateExpWin()
+            liss_1.updateExpWin()
+        }
+    }
+
     function updateDpt(centerCursor){
         anserFooterBar.dpt = tube.pixToDpt(centerCursor);
         tube.expTp = anserFooterBar.dpt - tube.expHeight/2
+        tube.npt = liss_1.expWin*2
+        tube.pt0 = tube.expTp + tube.expHeight/2 - liss_1.expWin;
     }
 
     function updateStripChart(){

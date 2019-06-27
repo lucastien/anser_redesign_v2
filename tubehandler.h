@@ -20,6 +20,10 @@ class TubeHandler : public QObject
     Q_PROPERTY(int expTp READ getExpTp WRITE setExpTp NOTIFY expTpChanged)
     Q_PROPERTY(int expWidth READ getExpWidth WRITE setExpWidth NOTIFY expWidthChanged)
     Q_PROPERTY(int expHeight READ getExpHeight WRITE setExpHeight NOTIFY expHeightChanged)
+    Q_PROPERTY(int lissWidth READ getLissWidth WRITE setLissWidth NOTIFY lissWidthChanged)
+    Q_PROPERTY(int lissHeight READ getLissHeight WRITE setLissHeight NOTIFY lissHeightChanged)
+    Q_PROPERTY(int pt0 READ getPt0 WRITE setPt0 NOTIFY pt0Changed)
+    Q_PROPERTY(int npt READ getNpt WRITE setNpt NOTIFY nptChanged)
     Q_OBJECT
 public:
     explicit TubeHandler(QObject *parent = nullptr);
@@ -36,11 +40,12 @@ public:
     Q_INVOKABLE int getDrawPointList(const int chan, const int xavg_p);
     Q_INVOKABLE QPoint getPoint(const int i);
     Q_INVOKABLE QPoint getExpPoint(const int i);
+    Q_INVOKABLE QPoint getLissPoint(const int i);
     Q_INVOKABLE int maxScale(const int height) const;
     Q_INVOKABLE int getCursorWidth(const int currentPix, const int expWidth);
     Q_INVOKABLE int pixToDpt(const int pix);
     Q_INVOKABLE int calExpPoints(const int chan, bool leftside);
-
+    Q_INVOKABLE int calLissPoints(const int chan);
     int getExpTp() const;
     void setExpTp(int expTp);
 
@@ -49,6 +54,18 @@ public:
 
     int getExpHeight() const;
     void setExpHeight(int expHeight);
+
+    int getLissWidth() const;
+    void setLissWidth(int lissWidth);
+
+    int getLissHeight() const;
+    void setLissHeight(int lissHeight);
+
+    int getPt0() const;
+    void setPt0(int Pt0);
+
+    int getNpt() const;
+    void setNpt(int Npt);
 
 public slots:
     bool loadTube();
@@ -62,6 +79,10 @@ signals:
     void expTpChanged();
     void expWidthChanged();
     void expHeightChanged();
+    void lissWidthChanged();
+    void lissHeightChanged();
+    void pt0Changed();
+    void nptChanged();
 private:
     int sizeHeader( TubeHeader *hdr, QDataStream& in);
     int initTube(const int npt);
@@ -73,10 +94,13 @@ private:
     QString tubeFile;
     QVector<QPoint> points;
     QVector<QPoint> ePoints;
+    QVector<QPoint> lPoints; //lissajous points
     QMap<int, int> m_point2PixMap;
     int m_scale, m_stripWidth, m_stripHeight;
     int m_cursorWidth;
     int m_expTp, m_expHeight, m_expWidth;
+    int m_lissWidth, m_lissHeight;
+    int m_Pt0, m_Npt;
 
 };
 

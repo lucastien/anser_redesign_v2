@@ -83,6 +83,9 @@ Item {
             if(scale > tube.maxScale(locArea.height)){
                 scale = tube.maxScale(locArea.height)
             }
+            if(scale < 1){
+                scale = 1
+            }
             console.log("Scale value = " + scale)
             if(tube.scale !== scale)
                 tube.scale = scale;

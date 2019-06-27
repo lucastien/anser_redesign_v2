@@ -18,44 +18,20 @@ Item {
     property alias cursorWidth: cursorRect.height
     property int expStripHeight
 
+    signal scaleChanged(int inc)
+
 
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
-        Rectangle{
+        ChannelScroller{
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
-            height: 50
-            color: "black"
-            border.color: "white"
-
-            Button{
-                id: switchChanBtn
-                anchors.fill: parent
-                text: "Chan " + currentChan
-                flat: true
-                font.bold: true
-
-                MouseArea{
-                    anchors.fill: parent
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onClicked: {
-                        if(mouse.button === Qt.RightButton){
-                            currentChan--;
-                        }else if(mouse.button === Qt.LeftButton){
-                            currentChan++;
-                        }
-                        if(currentChan >= 10)
-                            currentChan = 0;
-                        else if(currentChan < 0)
-                            currentChan = 9;
-                        if(points){
-                            console.log("Switch to channel " + currentChan)
-                            drawStrip()
-                        }
-                    }
-                }
-
+            currentChan: stripChart.currentChan
+            onCurrentChanChanged: {
+                stripChart.currentChan = currentChan
+                if(points)
+                    drawStrip()
             }
         }
 
@@ -69,21 +45,10 @@ Item {
             z: myCanvas.z + 1
             Canvas{
                 id: myCanvas
-
                 anchors.fill:parent
-
                 onPaint:{
                     paintStripChart()
-                }
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked:{
-                        if((mouse.button === Qt.LeftButton) && (mouse.modifiers & Qt.ControlModifier)){
-                            stripChart.xavg_p = mouseY;
-                            drawStrip();
-                        }
-                    }
-                }
+                }                
             }
 
             Rectangle{
@@ -96,13 +61,36 @@ Item {
                 y: stripArea.height/2
                 onYChanged: stripChart.cursorY = y
                 onHeightChanged: stripChart.cursorWidth = height;
-                MouseArea {
-                    anchors.fill: parent
-                    drag.target: cursorRect
-                    drag.axis: Drag.YAxis
-                    drag.minimumY: 0
-                    drag.maximumY: stripArea.height - cursorRect.height
+
+            }
+
+            MouseArea {
+                id: stripMouse
+                anchors.fill: parent
+                drag.target: cursorRect
+                drag.axis: Drag.YAxis
+                drag.minimumY: 0
+                drag.maximumY: stripArea.height - cursorRect.height
+                onClicked: {
+                    if(mouse.button === Qt.LeftButton){
+                        cursorRect.y = mouseY - cursorRect.height/2
+                        if(mouse.modifiers & Qt.ControlModifier){
+                            stripChart.xavg_p = mouseY;
+                            drawStrip();
+                        }
+                    }
                 }
+                onWheel: {
+                    if(tube){
+                        console.log("wheel changed "+ wheel.angleDelta.y)
+                        if(wheel.angleDelta.y < 0){
+                            stripChart.scaleChanged(1)
+                        }else{
+                            stripChart.scaleChanged(-1)
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -133,7 +121,7 @@ Item {
 
     function drawStrip(){
         console.log("Call drawing stripchart on channel " + currentChan)
-        if(tube){
+        if(tube ){
             //clearCanvas()
             enablePaintStrip = true
             myCanvas.requestPaint();

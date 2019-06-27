@@ -10,19 +10,18 @@ Item {
     id: lissajousItem
     property alias expWidth: expandStripChart.expWidth
     property alias expHeight: expandStripChart.expHeight
-    property int channel
+    property alias channel: switchChan.currentChan
+    property alias expWin: expandStripChart.expWin
+    property alias lissWidth: lissajous.width
+    property alias lissHeight: lissajous.height
     property TubeHandler tube
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
-        Rectangle{
-            id: lissChan
+        ChannelScroller{
+            id: switchChan
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
-            height: 50
 
-            color: "black"
-            border.color: "white"
         }
         Rectangle{
             id: lissajous
@@ -31,6 +30,11 @@ Item {
             Layout.alignment: Qt.AlignTop
             color: "black"
             border.color: "white"
+            Canvas{
+                id: lissCanvas
+                anchors.fill: parent
+                onPaint: drawLissajous()
+            }
         }
         Rectangle{
             id: measBox
@@ -55,7 +59,48 @@ Item {
             Layout.alignment: Qt.AlignBottom
             tube: lissajousItem.tube
             channel: lissajousItem.channel
+            expWin: lissajousItem.expWin
         }
+    }
+
+    Connections{
+        target: tube
+        onPt0Changed: updateLissajous()
+        onNptChanged: updateLissajous()
+    }
+
+    Connections{
+        target: switchChan
+        onCurrentChanChanged: {
+            expandStripChart.updateExpChart()
+            updateLissajous()
+        }
+    }
+
+    function updateExpWin(){
+        expandStripChart.requestUpdateExpWin()
+    }
+
+    function updateLissajous(){
+        lissCanvas.requestPaint()
+    }
+
+    function drawLissajous()
+    {
+        var ctx = lissCanvas.getContext("2d");
+        ctx.reset()
+        var nPoints = tube.calLissPoints(channel)
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "white"
+        ctx.beginPath()
+        for(var i = 0; i < nPoints - 1; i++){
+            var point = tube.getLissPoint(i)
+            var nextPoint = tube.getLissPoint(i+1);
+            ctx.moveTo(point.x, point.y);
+            ctx.lineTo(nextPoint.x, nextPoint.y)
+        }
+        ctx.stroke()
+
     }
 }
 
