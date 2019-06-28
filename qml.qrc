@@ -22,5 +22,7 @@
         <file>qml/StatusBar.qml</file>
         <file>qml/AnserLocBar.qml</file>
         <file>qml/ChannelScroller.qml</file>
+        <file>qml/js/AnserGlobal.js</file>
+        <file>qml/base/SelectionBox.qml</file>
     </qresource>
 </RCC>

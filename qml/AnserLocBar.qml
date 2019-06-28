@@ -4,62 +4,45 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import QtQuick.Controls.Styles 1.4
 import TubeHandler 1.0
-
+import "js/AnserGlobal.js" as Global
+import "base"
 Item {
     id: locBar
     property TubeHandler tube
-    property alias scale: scaleBtn.scale
+    property int scale: 1
 
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
         visible: true
-        Rectangle{
+
+        SelectionBox{
             Layout.fillWidth: true
-            height: 50
-            color: "#232521"
-            border.color: "white"
-            Button{
-                id: scaleBtn
-                property int scale: 1
-                anchors.fill: parent
-                text: scale.toString()
-                spacing: 2
-                rightPadding: 0
-                leftPadding: 0
-                padding: 0
-                font.pointSize: 12
-                MouseArea{
-                    id: mouseScaleBtn
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onWheel: {
-                        if(tube){
-                            if(wheel.angleDelta.y < 0){
-                                changeScale(1)
-                            }else{
-                                changeScale(-1)
-                            }
-                        }
-                    }
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onClicked: {
-                        if(mouse.button === Qt.LeftButton){
-                            changeScale(1)
-                        }
-                        if(mouse.button === Qt.RightButton){
-                           changeScale(-1)
-                        }
-                    }
+            text: locBar.scale.toString()
+            onClicked: {
+                if(mouseButton === Qt.LeftButton){
+                    changeScale(1)
+                }
+                if(mouseButton === Qt.RightButton){
+                   changeScale(-1)
+                }
+            }
+            onWheeled: {
+                if(angleY < 0){
+                    changeScale(1)
+                }else{
+                    changeScale(-1)
                 }
             }
         }
+
+
         Rectangle{
             id: locArea
             color: "#262222"
             Layout.fillWidth: true
             Layout.fillHeight: true
-            border.color: "white"
+            border.color: Global.StripChartBorder
             z: locCanvas.z +1
             Canvas{
                 id: locCanvas

@@ -4,8 +4,8 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import QtQuick.Controls.Styles 1.4
 import TubeHandler 1.0
-
-
+import "js/AnserGlobal.js" as Global
+import "base"
 Item {
     id: lissajousItem
     property alias expWidth: expandStripChart.expWidth
@@ -18,18 +18,29 @@ Item {
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
-        ChannelScroller{
-            id: switchChan
-            Layout.fillWidth: true
 
+        RowLayout{
+            Layout.fillWidth: true
+            spacing: 0
+            SelectionBox{
+                width: 50
+            }
+            ChannelScroller{
+                id: switchChan
+                Layout.fillWidth: true
+            }
+            SelectionBox{
+                width: 50
+            }
         }
+
         Rectangle{
             id: lissajous
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
-            color: "black"
-            border.color: "white"
+            color: Global.LissajousColor
+            border.color: Global.LissajousBorder
             Canvas{
                 id: lissCanvas
                 anchors.fill: parent
@@ -39,18 +50,18 @@ Item {
         Rectangle{
             id: measBox
             Layout.fillWidth: true
-            height: 25
+            height: Global.MeasBoxHeight
             Layout.alignment: Qt.AlignTop
-            color: "black"
-            border.color: "white"
+            color: Global.LissajousColor
+            border.color: Global.LissajousBorder
         }
         Rectangle{
             id: utilitiesTool
             Layout.fillWidth: true
-            height: 25
+            height: Global.MeasBoxHeight
             Layout.alignment: Qt.AlignTop
-            color: "black"
-            border.color: "white"
+            color: Global.LissajousColor
+            border.color: Global.LissajousBorder
         }
         AnserExpandStripChart{
             id: expandStripChart

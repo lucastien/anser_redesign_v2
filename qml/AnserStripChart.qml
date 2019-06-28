@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import QtQuick.Controls.Styles 1.4
 import TubeHandler 1.0
-
+import "js/AnserGlobal.js" as Global
 Item {
     id: stripChart
     property TubeHandler tube
@@ -40,8 +40,8 @@ Item {
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: "black"
-            border.color: "white"
+            color: Global.StripChartColor
+            border.color: Global.StripChartBorder
             z: myCanvas.z + 1
             Canvas{
                 id: myCanvas
@@ -54,7 +54,7 @@ Item {
             Rectangle{
                 id: cursorRect
                 width: stripArea.width
-                height: 50
+                height: Global.ChannelBoxHeight
                 color: "#e60707"
                 opacity: 0.8
                 x: 0

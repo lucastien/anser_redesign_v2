@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import QtQuick.Controls.Styles 1.4
 import TubeHandler 1.0
-
+import "js/AnserGlobal.js" as Global
 
 Item {
     id: expandStripChart
@@ -22,8 +22,8 @@ Item {
             height: xyComp.height
             width: xyComp.width/2
             anchors.left: xyComp.left
-            color: "black"
-            border.color: "white"
+            color: Global.LissajousColor
+            border.color: Global.LissajousBorder
             Canvas{
                 id: xExpCanvas
                 anchors.fill: parent
@@ -35,8 +35,8 @@ Item {
             height: xyComp.height
             width: xyComp.width/2
             anchors.left: xComp.right
-            color: "black"
-            border.color: "white"
+            color: Global.LissajousColor
+            border.color: Global.LissajousBorder
             Canvas{
                 id: yExpCanvas
                 anchors.fill: parent
