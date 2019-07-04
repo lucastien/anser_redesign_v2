@@ -14,6 +14,7 @@ DEFINES += WINDOWS_IGNORE_PACKING_MISMATCH
 
 SOURCES += \
         channel.cpp \
+        channelhandler.cpp \
         channelqmlitem.cpp \
         disktablemodel.cpp \
         main.cpp \
@@ -53,6 +54,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     channel.h \
+    channelhandler.h \
     channelparam.h \
     channelqmlitem.h \
     data.h \
@@ -66,3 +68,4 @@ HEADERS += \
     tlistcontroller.h \
     tubehandler.h \
     winsock2.h
+

@@ -24,5 +24,6 @@
         <file>qml/ChannelScroller.qml</file>
         <file>qml/js/AnserGlobal.js</file>
         <file>qml/base/SelectionBox.qml</file>
+        <file>qml/ChannelPicker.qml</file>
     </qresource>
 </RCC>
