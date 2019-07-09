@@ -8,7 +8,6 @@
 #include <QMap>
 
 #include "data.h"
-#include "channelqmlitem.h"
 
 class TubeHandler : public QObject
 {

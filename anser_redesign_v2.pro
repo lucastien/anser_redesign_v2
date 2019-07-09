@@ -15,7 +15,6 @@ DEFINES += WINDOWS_IGNORE_PACKING_MISMATCH
 SOURCES += \
         channel.cpp \
         channelhandler.cpp \
-        channelqmlitem.cpp \
         disktablemodel.cpp \
         main.cpp \
         mountlisthandler.cpp \
@@ -56,7 +55,6 @@ HEADERS += \
     channel.h \
     channelhandler.h \
     channelparam.h \
-    channelqmlitem.h \
     data.h \
     diskitem.h \
     disktablemodel.h \

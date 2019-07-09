@@ -11,7 +11,6 @@
 #include "tlistcontroller.h"
 #include "sortfilterproxymodel.h"
 #include "tubehandler.h"
-#include "channelqmlitem.h"
 
 int main(int argc, char *argv[])
 {
