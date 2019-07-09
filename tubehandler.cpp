@@ -8,8 +8,11 @@
 #include <QPointF>
 #include <iostream>
 #include <fstream>
+#ifdef WIN32
 #include "winsock2.h"
-
+#else
+#
+#endif
 static void fixHdr( TubeHeader *h);
 
 TubeHandler::TubeHandler(QObject *parent) : QObject(parent),
