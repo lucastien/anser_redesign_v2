@@ -8,10 +8,11 @@
 #include <QPointF>
 #include <iostream>
 #include <fstream>
+
 #ifdef WIN32
 #include "winsock2.h"
 #else
-#
+#include <arpa/inet.h>
 #endif
 static void fixHdr( TubeHeader *h);
 

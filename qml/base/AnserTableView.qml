@@ -2,26 +2,17 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 
-import SortFilterProxyModel 1.0
-
 
 ListView{
-    id: diskInfoTableView
+    id: listView
     Layout.fillWidth: true
     Layout.fillHeight: true
-    property var currentDiskInfo
     contentWidth: headerItem.width
-    //flickableDirection: Flickable.HorizontalAndVerticalFlick
     clip: true
     focus: true
-    model: SortFilterProxyModel{
-        id: proxyModel
-        source: diskModel
-        diskIdFilterString: "*" + diskFilterBtn.text + "*"
-        sgFilterString: "*" + sgFilterBtn.text + "*"
-        legFilterString: "*" + legFilterBtn.text + "*"
-        alphaFilterString: "*" + alPhaFilterBtn.text + "*"
-    }
+
+    property int itemHeight: 20
+    property var headerNameList: null
 
     header: Rectangle{
         color: "lightblue"
@@ -32,15 +23,14 @@ ListView{
             spacing: 1
             Repeater{
                 id: headerRepeater
-                model: [qsTr("Reel"), qsTr("DiskID"), qsTr("SG"), qsTr("L"), qsTr("Unit"), qsTr("Alpha")]
-
+                model: listView.headerNameList
                 Label{
                     text: modelData
                     font.bold: true
                     Layout.alignment: Qt.AlignVCenter|Qt.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
-                    height: 20
+                    height: itemHeight
                     color: "black"
                     width: implicitWidth + 10
                     background: Rectangle {
@@ -51,43 +41,51 @@ ListView{
             }
         }
     }
-    function columnWidth(index) { return diskInfoTableView.headerItem.itemAt(index).width }
+    function columnWidth(index) { return listView.headerItem.itemAt(index).width }
+
+    property var roles: null
 
     delegate: Rectangle{
         id: itemIn
         width: parent.width
-        height: 20
+        height: itemHeight
         property int currentIndex: index
         Row {
             id: rowId
             anchors.fill: parent
             spacing: 1
             Repeater{
-                model: [reel, diskId, sg, leg, unit, alpha]
-                Label{
-                    Layout.alignment: Qt.AlignVCenter|Qt.AlignHCenter
-                    width: columnWidth(index)
-                    text: modelData
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    MouseArea{
-                        anchors.fill: parent
-                        onClicked: {
-                            diskInfoTableView.currentIndex = itemIn.currentIndex
-                        }
-                    }
+                model: listView.roles
+                Loader{
+                    property int modelIndex: itemIn.currentIndex
+                    property int headerIndex: index
+                    property string data: modelData
+                    sourceComponent: itemComponent
                 }
             }
         }
-
     }
+
     highlight: highlightBar
     highlightFollowsCurrentItem: false
 
-    onCurrentIndexChanged:{
-        currentDiskInfo = proxyModel.get(currentIndex)
-    }
+    Component{
+        id: itemComponent
+        Label{
+            Layout.alignment: Qt.AlignVCenter|Qt.AlignHCenter
+            width: columnWidth(headerIndex)
+            text: data
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
 
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    listView.currentIndex = modelIndex
+                }
+            }
+        }
+    }
 
     Component {
         id: highlightBar

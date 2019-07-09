@@ -25,5 +25,6 @@
         <file>qml/js/AnserGlobal.js</file>
         <file>qml/base/SelectionBox.qml</file>
         <file>qml/ChannelPicker.qml</file>
+        <file>qml/base/AnserTableView.qml</file>
     </qresource>
 </RCC>

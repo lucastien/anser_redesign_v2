@@ -1,9 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Controls 1.4 as C1
 import QtQuick.Layouts 1.3
-import QtQuick.Controls.Styles 1.4
 import Qt.labs.settings 1.0
 import TubeHandler 1.0
 ApplicationWindow {

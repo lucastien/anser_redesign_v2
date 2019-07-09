@@ -28,7 +28,7 @@ ColumnLayout{
         text: "GET REEL"
         Layout.fillWidth: true
         state: "off"
-        enabled: diskTableView.rowCount > 0
+        enabled: diskTableView.count > 0
 
     }
 
@@ -36,7 +36,7 @@ ColumnLayout{
         id: getIndexBtn
         text: "GET INDEX"
         Layout.fillWidth: true
-        enabled: diskTableView.rowCount > 0
+        enabled: diskTableView.count > 0
         states: [
             State {
                 name: "on";
@@ -150,7 +150,7 @@ ColumnLayout{
         }
     }
     function getReelInfo(){
-        diskInfo = diskTableView.getCurrentDiskInfo()
+        diskInfo = diskTableView.currentDiskInfo
         tlistController.getReel(diskInfo);
     }
 }
