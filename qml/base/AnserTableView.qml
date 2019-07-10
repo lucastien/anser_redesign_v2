@@ -5,21 +5,20 @@ import QtQuick.Layouts 1.3
 
 ListView{
     id: listView
-    Layout.fillWidth: true
-    Layout.fillHeight: true
     contentWidth: headerItem.width
     clip: true
     focus: true
 
     property int itemHeight: 20
     property var headerNameList: null
-
+    headerPositioning: ListView.OverlayHeader
     header: Rectangle{
         color: "lightblue"
-        width: parent.width; height: 20
+        width: parent.width; height: itemHeight
+        z: 2
         function itemAt(index) { return headerRepeater.itemAt(index) }
         Row {
-            width: parent.width; height: 20
+            width: parent.width; height: itemHeight
             spacing: 1
             Repeater{
                 id: headerRepeater
@@ -41,58 +40,19 @@ ListView{
             }
         }
     }
-    function columnWidth(index) { return listView.headerItem.itemAt(index).width }
-
-    property var roles: null
-
-    delegate: Rectangle{
-        id: itemIn
-        width: parent.width
-        height: itemHeight
-        property int currentIndex: index
-        Row {
-            id: rowId
-            anchors.fill: parent
-            spacing: 1
-            Repeater{
-                model: listView.roles
-                Loader{
-                    property int modelIndex: itemIn.currentIndex
-                    property int headerIndex: index
-                    property string data: modelData
-                    sourceComponent: itemComponent
-                }
-            }
-        }
+    function columnWidth(index) {
+        return listView.headerItem.itemAt(index).width
     }
 
     highlight: highlightBar
     highlightFollowsCurrentItem: false
 
-    Component{
-        id: itemComponent
-        Label{
-            Layout.alignment: Qt.AlignVCenter|Qt.AlignHCenter
-            width: columnWidth(headerIndex)
-            text: data
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-
-            MouseArea{
-                anchors.fill: parent
-                onClicked: {
-                    listView.currentIndex = modelIndex
-                }
-            }
-        }
-    }
-
     Component {
         id: highlightBar
         Rectangle {
-            width: diskInfoTableView.width; height: 20
+            width: listView.width; height: 20
             color: "red"
-            y: diskInfoTableView.currentItem.y
+            y: listView.currentItem.y
         }
     }
 }
