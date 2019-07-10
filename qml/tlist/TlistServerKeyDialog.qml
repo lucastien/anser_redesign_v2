@@ -13,33 +13,17 @@ Dialog {
     closePolicy: Popup.CloseOnEscape
     property alias serverName: serverKeyName.text
     property alias hostName: hostName.text
-    property alias mounted: mountedCheck.checked
+    property alias mounted: mountedCheck.checked    
     property bool editMode: false
+    property var serverKeys: []
+
     onAccepted:
     {
         console.log("Accepted")
         createOrUpdateServerKey()
     }
 
-    function createOrUpdateServerKey(){
-        if(editMode){
-            var num = serverKeyLayout.children.length
-            for(var i = 0; i < num; i++){
-                if(serverKeyLayout.children[i].text === serverKeyName.text){
-                    serverKeyLayout.children[i].hostName = hostName.text
-                    serverKeyLayout.children[i].mounted = mountedCheck.checked
-                    storeServerKey(serverKeyName.text, hostName.text, mountedCheck.checked)
-                    break;
-                }
-            }
-        }else{
-            var button = keyButton.createObject(serverKeyLayout)
-            button.text = serverKeyName.text
-            button.hostName = hostName.text
-            button.mounted = mountedCheck.checked
-            storeServerKey(serverKeyName.text, hostName.text, mountedCheck.checked)
-        }
-    }
+
 
     ColumnLayout {
         anchors.fill: parent
@@ -94,4 +78,48 @@ Dialog {
             DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
         }
     }
+
+
+    function createOrUpdateServerKey(){
+        var mountedStr = ""
+        if(editMode){
+            var num = serverKeyLayout.children.length
+            for(var i = 0; i < num; i++){
+                if(serverKeyLayout.children[i].text === serverKeyName.text){
+                    serverKeyLayout.children[i].hostName = hostName.text
+                    serverKeyLayout.children[i].mounted = mountedCheck.checked
+                    mountedStr = mountedCheck.checked? "true":"false"
+                    storeServerKey(serverKeyName.text, hostName.text, mountedCheck.checked)
+                    break;
+                }
+            }
+        }else{
+            var button = keyButton.createObject(serverKeyLayout)
+            button.text = serverKeyName.text
+            button.hostName = hostName.text
+            button.mounted = mountedCheck.checked
+            mountedStr = mountedCheck.checked? "true":"false"
+            storeServerKey(serverKeyName.text, hostName.text, mountedStr)
+        }
+    }
+
+    function storeServerKey( key, host, mount){
+        var isNewKey = true;
+        for(var i = 0; i < serverKeys.length; i++){
+            var keys = serverKeys[i].split(",")
+            if(keys !== null && keys.length === 3 && keys[0] === key){
+                isNewKey = false; //This is an old server key. Need to update
+                keys[1] = host
+                keys[2] = mount
+                serverKeys[i] = keys.join(",")
+                break;
+            }
+        }
+        if(isNewKey){
+            var keyStr = key + "," + host + "," + mount
+            serverKeys.push(keyStr);
+        }
+        rightPanel.serverKeys = serverKeys
+    }
+
 }

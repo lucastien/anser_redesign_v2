@@ -1,17 +1,38 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Controls 1.4 as C1
 import QtQuick.Layouts 1.3
-
+import Qt.labs.settings 1.0
+import TubeHandler 1.0
 
 ColumnLayout{
     Layout.fillWidth: true
     Layout.rightMargin: 10
     Layout.topMargin: 2
-    //            anchors.left: tlistTableView.right
     spacing:  0
 
     property var diskInfo
+
+    //Properties for setting server keys
+    property var serverKeys: ["LCL,localhost,true"]
+    property string concatServerList: "" //dirty workaround by using string for settings
+                                     //because settings does not work on array type
+
+    property TubeHandler tube
+    onConcatServerListChanged: {
+        serverKeys = concatServerList.split("|")
+    }
+
+
+    Component.onDestruction: {
+       concatServerList = serverKeys.join("|")
+    }
+
+    Component.onCompleted: {
+        createServerKeyButtons(serverKeys)
+
+    }
+
+
 
     Shortcut{
         sequence: "Ctrl+B"
@@ -116,39 +137,34 @@ ColumnLayout{
         }
     }
 
-    function createServerKeyButtons(serverNames, hostNames, mountedList)
+    TlistServerKeyComponent{
+        id: keyButton
+    }
+
+    Connections{
+        target: serverPickKeyDiag
+        onServerKeysChanged:{
+            serverKeys = serverPickKeyDiag.serverKeys
+        }
+    }
+
+    function createServerKeyButtons(serverKeys)
     {
-        var list = tlistWindow.serverNames
         var i;
-        for(i = 0; i < serverNames.length; i++){
-            var button = keyButton.createObject(serverKeyLayout);
-            button.text = serverNames[i]
-            button.hostName = hostNames[i]
-            console.log("Mount: " + mountedList[i])
+        for(i = 0; i < serverKeys.length; i++){
+            var keys = serverKeys[i].split(",")
+            if(keys !== null && keys.length === 3){
+                var button = keyButton.createObject(serverKeyLayout);
+                button.text = keys[0]
+                button.hostName = keys[1]
+                button.mounted = keys[2] === "true"? true:false
+            }
         }
     }
 
-    function storeServerKey( key, host, mount){
-        var index = tlistWindow.serverNames.indexOf(key)
-        if(index === -1){
-            tlistWindow.serverNames.push(key)
-            tlistWindow.hostNames.push(host)
-            tlistWindow.mountedList.push(mount)
-        }else{
-            tlistWindow.hostNames[index] = host
-            tlistWindow.mountedList[index] = host
-        }
 
-    }
 
-    function removeServerKey(key){
-        var index = tlistWindow.serverNames.indexOf(key)
-        if( index !== -1 && index < root.serverNames.length){
-            tlistWindow.serverNames.splice(index, 1)
-            tlistWindow.hostNames.splice(index, 1)
-            tlistWindow.mountedList.splice(index, 1)
-        }
-    }
+
     function getReelInfo(){
         diskInfo = diskTableView.currentDiskInfo
         tlistController.getReel(diskInfo);

@@ -6,6 +6,7 @@ Component{
         id: button
         property string hostName: "unknow"
         property bool mounted: false
+
         ToolTip{
             text: qsTr("Host Name: ") + parent.hostName
             delay: 1000
@@ -43,6 +44,21 @@ Component{
                         button.destroy()
                     }
                 }
+            }
+        }
+
+        function removeServerKey(key){
+            var index = -1
+            for(var i = 0; i < rightPanel.serverKeys.length; i++){
+                var keys = rightPanel.serverKeys[i].split(",")
+                if(keys !== null && keys[0] === key){
+                    index = i;
+                    break;
+                }
+            }
+
+            if( index !== -1 && index < rightPanel.serverKeys.length){
+                rightPanel.serverKeys.splice(index, 1)
             }
         }
     }
