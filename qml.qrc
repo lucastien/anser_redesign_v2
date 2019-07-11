@@ -27,5 +27,6 @@
         <file>qml/ChannelPicker.qml</file>
         <file>qml/base/AnserTableView.qml</file>
         <file>qml/base/TableTextContent.qml</file>
+        <file>qml/js/CreateServerKeyButtonsComponent.js</file>
     </qresource>
 </RCC>

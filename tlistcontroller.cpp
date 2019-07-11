@@ -25,7 +25,12 @@ void TlistController::setReelModel(ReelInfoModel *model_)
 void TlistController::updateDiskModel(const QString &hostName)
 {
     if(hostName == "localhost"){
+#ifdef WIN32
         QDir dir("/raw_disk");
+#else
+        QString homePath = QDir::homePath();
+        QDir dir(homePath+"/raw_disk")
+#endif
         QList<DiskItem> items;
         QFileInfoList fileInfoList = dir.entryInfoList(QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
         foreach (QFileInfo file, fileInfoList) {

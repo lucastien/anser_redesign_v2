@@ -21,14 +21,15 @@ ApplicationWindow {
 
     Settings{
         id: settings
-        property alias servers: rightPanel.concatServerList
+        property alias serverKeys: rightPanel.concatServerList
     }
 
     TlistServerKeyDialog {
         id: serverPickKeyDiag
         anchors.centerIn: parent
-        serverKeys: rightPanel.serverKeys
+        //serverKeys: rightPanel.serverKeys
     }
+
 
 
     RowLayout{

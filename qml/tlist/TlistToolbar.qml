@@ -61,7 +61,10 @@ ToolBar{
                 timeout: 5000
                 visible: parent.hovered
             }
-            onClicked: serverPickKeyDiag.open()
+            onClicked:{
+                //serverPickKeyDiag.serverKeys = rightPanel.serverKeys
+                serverPickKeyDiag.open()
+            }
         }
     }
 

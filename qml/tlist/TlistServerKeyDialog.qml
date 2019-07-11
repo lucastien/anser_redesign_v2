@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.12
-
+import "../js/CreateServerKeyButtonsComponent.js" as ButtonCreation
 
 Dialog {
     id: root
@@ -15,8 +15,10 @@ Dialog {
     property alias hostName: hostName.text
     property alias mounted: mountedCheck.checked    
     property bool editMode: false
-    property var serverKeys: []
-
+//    property var serverKeys: []
+    property Component keyLayout: null
+    signal newServerKeyAdded(var key, var host, var mounted)
+    signal serverKeyModified(var key, var host, var mounted)
     onAccepted:
     {
         console.log("Accepted")
@@ -83,43 +85,29 @@ Dialog {
     function createOrUpdateServerKey(){
         var mountedStr = ""
         if(editMode){
-            var num = serverKeyLayout.children.length
-            for(var i = 0; i < num; i++){
-                if(serverKeyLayout.children[i].text === serverKeyName.text){
-                    serverKeyLayout.children[i].hostName = hostName.text
-                    serverKeyLayout.children[i].mounted = mountedCheck.checked
-                    mountedStr = mountedCheck.checked? "true":"false"
-                    storeServerKey(serverKeyName.text, hostName.text, mountedCheck.checked)
-                    break;
-                }
-            }
+            serverKeyModified(serverKeyName.text, hostName.text, mountedCheck.checked)
+//            var num = serverKeyLayout.children.length
+//            for(var i = 0; i < num; i++){
+//                if(serverKeyLayout.children[i].text === serverKeyName.text){
+//                    serverKeyLayout.children[i].hostName = hostName.text
+//                    serverKeyLayout.children[i].mounted = mountedCheck.checked
+//                    mountedStr = mountedCheck.checked? "true":"false"
+//                    storeServerKey(serverKeyName.text, hostName.text, mountedCheck.checked)
+//                    break;
+//                }
+//            }
         }else{
-            var button = keyButton.createObject(serverKeyLayout)
-            button.text = serverKeyName.text
-            button.hostName = hostName.text
-            button.mounted = mountedCheck.checked
-            mountedStr = mountedCheck.checked? "true":"false"
-            storeServerKey(serverKeyName.text, hostName.text, mountedStr)
+            newServerKeyAdded(serverKeyName.text, hostName.text, mountedCheck.checked)
+//            var text = serverKeyName.text
+//            var host = hostName.text
+//            var mounted = mountedCheck.checked
+//            ButtonCreation.setHost(text, host, mounted)
+//            ButtonCreation.createServerKeyButton()
+//            mountedStr = mountedCheck.checked? "true":"false"
+//            storeServerKey(serverKeyName.text, hostName.text, mountedStr)
         }
     }
 
-    function storeServerKey( key, host, mount){
-        var isNewKey = true;
-        for(var i = 0; i < serverKeys.length; i++){
-            var keys = serverKeys[i].split(",")
-            if(keys !== null && keys.length === 3 && keys[0] === key){
-                isNewKey = false; //This is an old server key. Need to update
-                keys[1] = host
-                keys[2] = mount
-                serverKeys[i] = keys.join(",")
-                break;
-            }
-        }
-        if(isNewKey){
-            var keyStr = key + "," + host + "," + mount
-            serverKeys.push(keyStr);
-        }
-        rightPanel.serverKeys = serverKeys
-    }
+
 
 }
