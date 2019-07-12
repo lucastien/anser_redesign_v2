@@ -3,7 +3,9 @@
 #include <QDir>
 #include <QFileInfoList>
 #include <QDebug>
-
+#ifdef Q_OS_WASM
+#include <emscripten.h>
+#endif
 TlistController::TlistController(QObject *parent) :
     QObject(parent),
     model(nullptr),
@@ -27,12 +29,20 @@ void TlistController::updateDiskModel(const QString &hostName)
     if(hostName == "localhost"){
 #ifdef WIN32
         QDir dir("/raw_disk");
-#else
-        QString homePath = QDir::homePath();
-        QDir dir(homePath+"/raw_disk")
 #endif
+#ifdef Q_OS_WASM
+        qDebug() << "In Wasm mode";
+        EM_ASM(
+            FS.mkdir("/working");
+            FS.mount(NODEFS, {root: "/home/w"}, "/working");
+        );
+        qDebug() << "Mounted success";
+        QDir dir("/working");
+#endif
+
         QList<DiskItem> items;
         QFileInfoList fileInfoList = dir.entryInfoList(QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+        qDebug() << "Num of subdirs: " << fileInfoList.count();
         foreach (QFileInfo file, fileInfoList) {
             const QString& diskName = file.fileName();
             QRegExp regDisk("DISK_(\\w+)_(\\w+)_(\\d+)([HC])(\\w+)");
