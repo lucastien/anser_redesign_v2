@@ -90,7 +90,7 @@ private:
     QScopedPointer<TubeData> m_tube;
     QScopedPointer<Channel> m_chan;
 
-    QString tubeFile;
+    QString m_tubeFile;
     QVector<QPoint> points;
     QVector<QPoint> ePoints;
     QVector<QPoint> lPoints; //lissajous points

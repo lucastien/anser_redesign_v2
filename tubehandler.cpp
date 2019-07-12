@@ -18,7 +18,7 @@ static void fixHdr( TubeHeader *h);
 
 TubeHandler::TubeHandler(QObject *parent) : QObject(parent),
     m_chan(nullptr),
-    tubeFile(QString())
+    m_tubeFile(QString(":/data/005021023102.T"))
 {
     m_scale = 1;
     m_cursorWidth = 0;
@@ -33,7 +33,7 @@ TubeHandler::~TubeHandler()
 
 QString TubeHandler::getTubeFile()
 {
-    return tubeFile;
+    return m_tubeFile;
 }
 
 int TubeHandler::getScale() const
@@ -378,22 +378,22 @@ int TubeHandler::calLissPoints(const int chan)
 
 void TubeHandler::setTubeFile(const QString &path)
 {
-    tubeFile = path;
+    m_tubeFile = path;
 }
 
 
 bool TubeHandler::loadTube()
 {
 
-    if(tubeFile.isEmpty()){
+    if(m_tubeFile.isEmpty()){
         qDebug() << "Cannot load tube because tube file is empty";
         return false;
     }
-    qDebug() << "Start load the tube file " << tubeFile;
+    qDebug() << "Start load the tube file " << m_tubeFile;
 
     char buff[READ_SIZE];
 
-    QFile file(tubeFile);
+    QFile file(m_tubeFile);
     if(file.open(QIODevice::ReadOnly) == false){
         qDebug() << "Could not load tube file";
         return false;

@@ -28,5 +28,30 @@
         <file>qml/base/AnserTableView.qml</file>
         <file>qml/base/TableTextContent.qml</file>
         <file>qml/js/CreateServerKeyButtonsComponent.js</file>
+        <file>data/003021999999.T</file>
+        <file>data/005021023102.T</file>
+        <file>channel.cpp</file>
+        <file>channel.h</file>
+        <file>channelhandler.cpp</file>
+        <file>channelhandler.h</file>
+        <file>channelparam.h</file>
+        <file>data.h</file>
+        <file>diskitem.h</file>
+        <file>disktablemodel.cpp</file>
+        <file>disktablemodel.h</file>
+        <file>global.h</file>
+        <file>main.cpp</file>
+        <file>mountlisthandler.cpp</file>
+        <file>mountlisthandler.h</file>
+        <file>reelinfomodel.cpp</file>
+        <file>reelinfomodel.h</file>
+        <file>reellistitem.h</file>
+        <file>sortfilterproxymodel.cpp</file>
+        <file>sortfilterproxymodel.h</file>
+        <file>tlistcontroller.cpp</file>
+        <file>tlistcontroller.h</file>
+        <file>tubehandler.cpp</file>
+        <file>tubehandler.h</file>
+        <file>winsock2.h</file>
     </qresource>
 </RCC>

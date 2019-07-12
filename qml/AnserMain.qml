@@ -13,7 +13,6 @@ ApplicationWindow {
     property TubeHandler tubeHanlder: tubeH
 
 
-
     menuBar: AnserMenuBar{
 
     }
