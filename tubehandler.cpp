@@ -1,11 +1,13 @@
 #include "channel.h"
 #include "tubehandler.h"
+#include "anserglobal.h"
 #include <QDebug>
 #include <QFile>
 #include <QDataStream>
 #include <QtEndian>
 #include <QtMath>
 #include <QPointF>
+#include <QDateTime>
 #include <iostream>
 #include <fstream>
 
@@ -108,12 +110,12 @@ static int formatBuff(TubeData *tube, char *buff,int nbyte)
         short y = htons(*p++);
 
         if(tube->channels.find(ch) == tube->channels.end()){
-            Channel chanObj(QString::number(ch)); //Temporarily set channel name equals to chanOrder
-            chanObj.add(x, y);
+            ChannelPtr chanObj(new Channel(QString::number(ch))); //Temporarily set channel name equals to chanOrder
+            chanObj->add(x, y);
             tube->channels[ch] = chanObj;
         }else{
-            Channel& chanObj = tube->channels[ch];
-            chanObj.add(x, y);
+            Channel *chanObj = tube->channels[ch].data();
+            chanObj->add(x, y);
         }
 
         if(++ch == tube->nraw)
@@ -151,18 +153,18 @@ int TubeHandler::getDrawPointList(const int chan,
     b = FACTOR * m_stripWidth * qCos(theta);
     c = FACTOR * span;
 
-    Channel& channel = m_tube->channels[chan];
+    Channel* channel = m_tube->channels[chan].data();
 
     //cal xavg point
     int dpt = stripPoint(xavg_p, m_stripHeight, m_scale);
-    if(dpt < 0 || dpt >= channel.getData().size()){ //invalid dpt then calculate avg data
-        calAvgData(channel, vxavg, vyavg);
+    if(dpt < 0 || dpt >= channel->getData().size()){ //invalid dpt then calculate avg data
+        AnserGlobal::calAvgXY(channel, vxavg, vyavg);
     }else{
-       const QPoint& data = channel.at(dpt);
+       const QPoint& data = channel->at(dpt);
        vxavg = static_cast<short>(data.x());
        vyavg = static_cast<short>(data.y());
     }
-    ChannelParam& cp = channel.getCp();
+    ChannelParam& cp = channel->getCp();
     cp.xavg = vxavg;
     cp.yavg = vyavg;
     pix = 0;
@@ -170,7 +172,7 @@ int TubeHandler::getDrawPointList(const int chan,
 
     if(pt0 >= 0 && pt0 < m_tube->npt)
         {
-        x0 = cent + (a*(channel.at(pt0).x()-vxavg) + b*(channel.at(pt0).y()-vyavg))/c;
+        x0 = cent + (a*(channel->at(pt0).x()-vxavg) + b*(channel->at(pt0).y()-vyavg))/c;
         }
     else
         x0 = cent;
@@ -188,7 +190,7 @@ int TubeHandler::getDrawPointList(const int chan,
             {
             if(pt0 >= 0 && pt0 < m_tube->npt)
                 {
-                x = cent + (a*(channel.at(pt0).x()-vxavg) + b*(channel.at(pt0).y()-vyavg))/c;
+                x = cent + (a*(channel->at(pt0).x()-vxavg) + b*(channel->at(pt0).y()-vyavg))/c;
                 }
             else
                 x = cent;
@@ -201,7 +203,7 @@ int TubeHandler::getDrawPointList(const int chan,
 
         if(pt0 >= 0 && pt0 < m_tube->npt)
             {
-            x0 = cent + (a*(channel.at(pt0).x()-vxavg) + b*(channel.at(pt0).y()-vyavg))/c;
+            x0 = cent + (a*(channel->at(pt0).x()-vxavg) + b*(channel->at(pt0).y()-vyavg))/c;
             }
         else
             x0 = cent;
@@ -265,6 +267,9 @@ int TubeHandler::pixToDpt(const int pix)
 
 int TubeHandler::calExpPoints(const int chan, bool leftside)
 {
+    if(m_tube.isNull()) return 0;
+    if(m_tube->channels.find(chan) == m_tube->channels.end()) return 0;
+
     int k;
     short base;
     int a,b,c,vxavg,vyavg,cent;
@@ -279,11 +284,11 @@ int TubeHandler::calExpPoints(const int chan, bool leftside)
         return 0;
     }
 
-    /* get raw data pointers */
-    Channel& channel = m_tube->channels[chan];
-    ChannelParam& cp = channel.getCp();
+    // get raw data pointers
+    Channel* channel = m_tube->channels[chan].data();
+    ChannelParam& cp = channel->getCp();
     if(cp.xavg == 0){
-        calAvgData(channel, cp.xavg, cp.yavg);
+        AnserGlobal::calAvgXY(channel, cp.xavg, cp.yavg);
     }
     vxavg = cp.xavg;
     vyavg = cp.yavg;
@@ -306,8 +311,8 @@ int TubeHandler::calExpPoints(const int chan, bool leftside)
     ePoints.clear();
     for(k = 0; k < m_expHeight; ++k){
         y1 = base--;
-        vx = channel.at(pnt).x() - vxavg;
-        vy = channel.at(pnt).y() - vyavg;
+        vx = channel->at(pnt).x() - vxavg;
+        vy = channel->at(pnt).y() - vyavg;
         if(leftside){
             x1 = cent + (-b*vx + a*vy)/c;
         }else {
@@ -321,7 +326,11 @@ int TubeHandler::calExpPoints(const int chan, bool leftside)
 
 int TubeHandler::calLissPoints(const int chan)
 {
-    register int k;
+    if(m_tube.isNull()) return 0;
+    if(m_tube->channels.find(chan) == m_tube->channels.end()) return 0;
+
+
+    int k;
     int a,b,c,xcent,ycent;
     int vx,vy,vxavg,vyavg;
     int x1, y1;
@@ -333,10 +342,10 @@ int TubeHandler::calLissPoints(const int chan)
         return 0;
     }
     /* get raw data pointers */
-    Channel& channel = m_tube->channels[chan];
-    ChannelParam& cp = channel.getCp();
+    Channel* channel = m_tube->channels[chan].data();
+    ChannelParam& cp = channel->getCp();
     if(cp.xavg == 0){
-        calAvgData(channel, cp.xavg, cp.yavg);
+        AnserGlobal::calAvgXY(channel, cp.xavg, cp.yavg);
     }
     vxavg = cp.xavg;
     vyavg = cp.yavg;
@@ -365,8 +374,8 @@ int TubeHandler::calLissPoints(const int chan)
     {
         if(++pt0 >= m_tube->npt) pt0=0;
 
-        vx = channel.at(pt0).x() - vxavg;
-        vy = channel.at(pt0).y() - vyavg;
+        vx = channel->at(pt0).x() - vxavg;
+        vy = channel->at(pt0).y() - vyavg;
         x1 = xcent + (a*vx + b*vy)/c;
         y1 = ycent + (b*vx - a*vy)/c;
         lPoints.push_back(QPoint(x1, y1));
@@ -431,13 +440,17 @@ bool TubeHandler::loadTube()
         readSize = qMin<int>(READ_SIZE, dataCount);
     }
     qDebug() << "Load tube done";
-    QMap<int, Channel>::iterator it = m_tube->channels.begin();
+    QMap<int, ChannelPtr>::iterator it = m_tube->channels.begin();
 
     for(; it != m_tube->channels.end(); it++){
-        Channel& ch = it.value();
-        int dataSize = ch.getData().size();
+        Channel* ch = it.value().data();
+        //Update dataset Id to channel in order to support multi-set
+        //Use inspected year stored in tube header for dataset id
+        int year = QDateTime::fromTime_t(m_tube->hdr.tic_time).date().year();
+        ch->setDataSetId(QString::number(year));
+        int dataSize = ch->getData().size();
         for(int i = dataSize; i < m_tube->npt; i++){
-            ch.add(0, 0);
+            ch->add(0, 0);
         }
     }
     file.close();
@@ -492,6 +505,37 @@ void TubeHandler::setNpt(int Npt)
         m_Npt = Npt;
         Q_EMIT nptChanged();
     }
+}
+
+QList<QObject *> TubeHandler::getChannels() const
+{
+    if(m_tube != nullptr || !m_tube->channels.empty()){
+        return QList<QObject*>();
+    }
+    QList<QObject *> channels;
+    QMap<int, ChannelPtr>::iterator it = m_tube->channels.begin();
+    for (;it != m_tube->channels.end();++it) {
+        Channel *ch = it.value().data();
+        channels.push_back(ch);
+    }
+    return channels;
+}
+
+Channel *TubeHandler::getChannel(const int idx) const
+{
+    if(m_tube == nullptr ||
+      m_tube->channels.empty() ||
+      idx < 0 ||
+      idx >= m_tube->channels.size()){
+        return nullptr;
+    }
+    QMap<int, ChannelPtr>::iterator it = m_tube->channels.begin();
+    for (;it != m_tube->channels.end();++it) {
+        if(it.key() == idx){
+            return it.value().data();
+        }
+    }
+    return nullptr;
 }
 
 int TubeHandler::getPt0() const

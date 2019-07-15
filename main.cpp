@@ -11,6 +11,7 @@
 #include "tlistcontroller.h"
 #include "sortfilterproxymodel.h"
 #include "tubehandler.h"
+#include "lissajousitem.h"
 
 int main(int argc, char *argv[])
 {
@@ -26,9 +27,11 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 1, 0, "SortFilterProxyModel");
 //    qmlRegisterType<TubeHandler>("TubeHandler", 1, 0, "TubeHandler");
-//    qmlRegisterUncreatableType<TubeHandler>("TubeHandler", 1, 0, "TubeHandler", QLatin1String("Can't create instances of TubeHandler"));
+    qmlRegisterUncreatableType<TubeHandler>("TubeHandler", 1, 0, "TubeHandler", QLatin1String("Can't create instances of TubeHandler"));
     qmlRegisterType<TubeHandler>();
     qmlRegisterType<TubeHandler>("TubeHandler", 1, 0, "TubeHandler");
+    qmlRegisterType<LissajousItem>("App", 1, 0, "LissajousItem");
+    qmlRegisterUncreatableType<Channel>("App", 1, 0, "Channel", QLatin1String("Cannot create objects of type Channel"));
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/qml/AnserMain.qml"));

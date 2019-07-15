@@ -1,17 +1,13 @@
 #include <QObject>
 #include "channel.h"
 
-Channel::Channel(const QString& name_): m_Name(name_)
+Channel::Channel(const QString& name_, QObject *parent):
+    QObject (parent),
+    m_Name(name_)
 {
     memset(&cp, 0, sizeof (ChannelParam));
 }
 
-Channel::Channel(const Channel& ch)
-{
-    m_Data = ch.m_Data;
-    m_Name = ch.m_Name;
-    cp = ch.cp;
-}
 
 void Channel::add(const short x, const short y)
 {
@@ -40,3 +36,60 @@ const QVector<QPoint> &Channel::getData() const
 {
     return m_Data;
 }
+
+QString Channel::getName() const
+{
+    return m_Name;
+}
+
+void Channel::setName(const QString &Name)
+{
+    m_Name = Name;
+}
+
+int Channel::getRot() const
+{
+    return cp.rot;
+}
+
+void Channel::setRot(int rot_)
+{
+    if(rot_ != cp.rot){
+        cp.rot = rot_;
+        Q_EMIT rotChanged();
+    }
+}
+
+int Channel::getSpan() const
+{
+    return cp.span;
+}
+
+void Channel::setSpan(int span)
+{
+    if(span != cp.span){
+        cp.span = span;
+        Q_EMIT spanChanged();
+    }
+}
+
+int Channel::getRawNpt() const
+{
+    return m_rawNpt;
+}
+
+void Channel::setRawNpt(int rawNpt)
+{
+    m_rawNpt = rawNpt;
+}
+
+QString Channel::getDataSetId() const
+{
+    return m_dataSetId;
+}
+
+void Channel::setDataSetId(const QString &dataSetId)
+{
+    m_dataSetId = dataSetId;
+}
+

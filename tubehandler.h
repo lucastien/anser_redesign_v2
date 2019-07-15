@@ -12,6 +12,7 @@
 class TubeHandler : public QObject
 {
     Q_PROPERTY(QString tubeFile READ getTubeFile WRITE setTubeFile)
+    Q_PROPERTY(QList<QObject*> channels READ getChannels NOTIFY channelsChanged)
     Q_PROPERTY(int stripWidth READ getStripWidth WRITE setStripWidth NOTIFY stripWidthChanged)
     Q_PROPERTY(int stripHeight READ getStripHeight WRITE setStripHeight NOTIFY stripHeightChanged)
     Q_PROPERTY(int scale READ getScale WRITE setScale NOTIFY scaleChanged)
@@ -36,6 +37,7 @@ public:
     int getStripHeight() const;
     void setStripHeight(const int height);
     int getCursorWidth() const;
+    Q_INVOKABLE Channel *getChannel(const int idx) const;
     Q_INVOKABLE int getDrawPointList(const int chan, const int xavg_p);
     Q_INVOKABLE QPoint getPoint(const int i);
     Q_INVOKABLE QPoint getExpPoint(const int i);
@@ -65,7 +67,7 @@ public:
 
     int getNpt() const;
     void setNpt(int Npt);
-
+    QList<QObject *> getChannels() const;
 public slots:
     bool loadTube();
 
@@ -82,6 +84,7 @@ signals:
     void lissHeightChanged();
     void pt0Changed();
     void nptChanged();
+    void channelsChanged();
 private:
     int sizeHeader( TubeHeader *hdr, QDataStream& in);
     int initTube(const int npt);

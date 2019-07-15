@@ -5,6 +5,7 @@ import QtQuick.Window 2.12
 import TubeHandler 1.0
 import "js/AnserGlobal.js" as Global
 import "base"
+import App 1.0
 Item {
     id: lissajousItem
     property alias expWidth: expandStripChart.expWidth
@@ -13,7 +14,13 @@ Item {
     property alias expWin: expandStripChart.expWin
     property alias lissWidth: lissajous.width
     property alias lissHeight: lissajous.height
+
     property TubeHandler tube
+    property Channel chan: null
+    onChannelChanged: {
+        lissajous.pushData(tube.getChannel(channel));
+    }
+
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
@@ -33,18 +40,24 @@ Item {
             }
         }
 
-        Rectangle{
+//        Rectangle{
+//            id: lissajous
+//            Layout.fillHeight: true
+//            Layout.fillWidth: true
+//            Layout.alignment: Qt.AlignTop
+//            color: Global.LissajousColor
+//            border.color: Global.LissajousBorder
+//            Canvas{
+//                id: lissCanvas
+//                anchors.fill: parent
+//                onPaint: drawLissajous()
+//            }
+//        }
+        LissajousItem{
             id: lissajous
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
-            color: Global.LissajousColor
-            border.color: Global.LissajousBorder
-            Canvas{
-                id: lissCanvas
-                anchors.fill: parent
-                onPaint: drawLissajous()
-            }
         }
         Rectangle{
             id: measBox
@@ -75,15 +88,22 @@ Item {
 
     Connections{
         target: tube
-        onPt0Changed: updateLissajous()
-        onNptChanged: updateLissajous()
+        onPt0Changed:{
+//            updateLissajous()
+            lissajous.startPoint = tube.pt0
+            lissajous.endPoint = (tube.pt0 + tube.npt)
+         }
+        onNptChanged:{
+            lissajous.endPoint = (tube.pt0 + tube.npt)
+//            updateLissajous()
+        }
     }
 
     Connections{
         target: switchChan
         onCurrentChanChanged: {
             expandStripChart.updateExpChart()
-            updateLissajous()
+            //updateLissajous()
         }
     }
 

@@ -3,9 +3,11 @@
 
 #include <QMap>
 #include <QVector>
+#include <QSharedPointer>
+
 #include <stdio.h>
 #include <string.h>
-
+#include "channel.h"
 /**************************************************************
 *                                                             *
 *             CHANNEL PARAMETERS                              *
@@ -107,8 +109,6 @@
 
 
 #define SIZE_STATUS_REPORT 20    /* number of bytes in status report */
-
-class Channel;
 
 typedef struct {
     short num;		/* channel number 			0 */
@@ -284,8 +284,7 @@ typedef struct sTubeHeader{
 struct TubeData {
     TubeHeader hdr;
     int source;			/* source of the data */
-
-    QMap<int, Channel> channels;
+    QMap<int, ChannelPtr> channels;
     int nraw;
     int npt;			/* number of points allocated */
     int raw_npt;			/* actual number of points */

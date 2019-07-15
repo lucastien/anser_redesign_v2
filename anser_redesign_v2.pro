@@ -13,13 +13,16 @@ DEFINES += WINDOWS_IGNORE_PACKING_MISMATCH
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        anserglobal.cpp \
         channel.cpp \
         channelhandler.cpp \
         disktablemodel.cpp \
+        lissajousitem.cpp \
         main.cpp \
         mountlisthandler.cpp \
         reelinfomodel.cpp \
         sortfilterproxymodel.cpp \
+        stripchartitem.cpp \
         tlistcontroller.cpp \
         tubehandler.cpp
 
@@ -52,6 +55,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    anserglobal.h \
     channel.h \
     channelhandler.h \
     channelparam.h \
@@ -59,10 +63,12 @@ HEADERS += \
     diskitem.h \
     disktablemodel.h \
     global.h \
+    lissajousitem.h \
     mountlisthandler.h \
     reelinfomodel.h \
     reellistitem.h \
     sortfilterproxymodel.h \
+    stripchartitem.h \
     tlistcontroller.h \
     tubehandler.h \
     winsock2.h
