@@ -4,12 +4,13 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import TubeHandler 1.0
 import "js/AnserGlobal.js" as Global
+import App 1.0
 Item {
     id: stripChart
     property TubeHandler tube
     property var points
-    property int currentChan: 3
-    property int xavg_p: 0
+    property alias currentChan: chanScoller.currentChan
+    property alias xavg_p: stripArea.avgPoint
     property alias stripWidth: stripArea.width
     property alias stripHeight: stripArea.height
     property bool enablePaintStrip: false
@@ -24,32 +25,21 @@ Item {
         anchors.fill: parent
         spacing: 0
         ChannelScroller{
+            id: chanScoller
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
-            currentChan: stripChart.currentChan
-            onCurrentChanChanged: {
-                stripChart.currentChan = currentChan
-                if(points)
-                    drawStrip()
+            currentChan: 3
+            onCurrentChanChanged: {                
+                drawStrip()
             }
         }
 
-        Rectangle{
+        StripChartItem{
             id: stripArea
             Layout.alignment: Qt.AlignTop
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: Global.StripChartColor
-            border.color: Global.StripChartBorder
-            z: myCanvas.z + 1
-            Canvas{
-                id: myCanvas
-                anchors.fill:parent
-                onPaint:{
-                    paintStripChart()
-                }                
-            }
-
+            avgPoint: 0
             Rectangle{
                 id: cursorRect
                 width: stripArea.width
@@ -99,6 +89,7 @@ Item {
         onScaleChanged: {
             var centPix = cursorRect.y + cursorRect.height/2
             tube.getCursorWidth(centPix, stripChart.expStripHeight)
+            stripArea.scale = tube.scale;
             drawStrip();
         }
     }
@@ -120,34 +111,11 @@ Item {
 
     function drawStrip(){
         console.log("Call drawing stripchart on channel " + currentChan)
-        if(tube ){
-            //clearCanvas()
-            enablePaintStrip = true
-            myCanvas.requestPaint();
+        if(tube){
+            stripArea.pushData(tube.getChannel(currentChan));
         }
     }
-    function getPoint(p){
-        return tube.getPoint(p);
-    }
-    function paintStripChart(){
-        console.log("Paint strip chart channel " + currentChan)
-        if(enablePaintStrip){
-            var ctx = myCanvas.getContext("2d")
-            ctx.reset()
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = "white"
-            ctx.beginPath()
-            points = tube.getDrawPointList(currentChan, xavg_p);
-            for(var i = 0; i < points - 1; i++){
-                var point = getPoint(i)
-                var nextPoint = getPoint(i+1);
-                ctx.moveTo(point.x, point.y);
-                ctx.lineTo(nextPoint.x, nextPoint.y)
-            }
-            ctx.stroke()
-            enablePaintStrip = false
-        }
-    }
+
 
 }
 

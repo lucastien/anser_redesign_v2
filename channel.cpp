@@ -1,11 +1,19 @@
 #include <QObject>
+#include <QDebug>
+#include <QQmlEngine>
 #include "channel.h"
 
 Channel::Channel(const QString& name_, QObject *parent):
     QObject (parent),
     m_Name(name_)
 {
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     memset(&cp, 0, sizeof (ChannelParam));
+}
+
+Channel::~Channel()
+{
+    qDebug() << "Channel " << m_Name << " is being destructed";
 }
 
 

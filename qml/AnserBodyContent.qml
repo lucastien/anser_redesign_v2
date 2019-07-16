@@ -11,12 +11,8 @@ Item {
 
     Component.onCompleted: {
         console.log("Strip chart initialize")
-        tube.stripWidth = stripRepeater.itemAt(0).stripWidth
-        tube.stripHeight = stripRepeater.itemAt(0).stripHeight
         tube.expHeight = lissRepeater.itemAt(0).expHeight
-        tube.expWidth = lissRepeater.itemAt(0).expWidth
-        tube.lissWidth = lissRepeater.itemAt(0).lissWidth
-        tube.lissHeight = lissRepeater.itemAt(0).lissHeight
+        tube.expWidth = lissRepeater.itemAt(0).expWidth        
     }
 
     RowLayout{

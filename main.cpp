@@ -12,6 +12,7 @@
 #include "sortfilterproxymodel.h"
 #include "tubehandler.h"
 #include "lissajousitem.h"
+#include "stripchartitem.h"
 
 int main(int argc, char *argv[])
 {
@@ -31,6 +32,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<TubeHandler>();
     qmlRegisterType<TubeHandler>("TubeHandler", 1, 0, "TubeHandler");
     qmlRegisterType<LissajousItem>("App", 1, 0, "LissajousItem");
+    qmlRegisterType<StripChartItem>("App", 1, 0, "StripChartItem");
     qmlRegisterUncreatableType<Channel>("App", 1, 0, "Channel", QLatin1String("Cannot create objects of type Channel"));
 
     QQmlApplicationEngine engine;

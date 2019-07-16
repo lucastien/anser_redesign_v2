@@ -6,7 +6,9 @@ LissajousItem::LissajousItem(QQuickPaintedItem *parent):
     QQuickPaintedItem (parent),
     m_startPoint(-1),
     m_endPoint(-1),
-    m_multiYearMode(false)
+    m_multiYearMode(false),
+    m_bgrColor("black"),
+    m_borderColor("#524d4d")
 {
 
 }
@@ -27,13 +29,16 @@ void LissajousItem::setChanIdx(int chanIdx)
 
 void LissajousItem::paint(QPainter *painter)
 {
-    qDebug() << "Call paint lissajous";
-    painter->fillRect(0, 0, width(), height(), QColor("red"));
-
+    painter->fillRect(0, 0, width(), height(), m_bgrColor);
+    painter->setPen(m_borderColor);
+    painter->drawRect(0, 0, width(), height());
     if(transformData2Liss() == true){
         for (LissPointMap::iterator it = m_points.begin(); it != m_points.end(); it++) {
             painter->setPen(QColor("white"));
-            painter->drawLines(it.value());
+            const QVector<QPointF>& points = it.value();
+            for (int i = 0; i < points.count() - 1; ++i) {
+                painter->drawLine(points[i], points[i+1]);
+            }
         }
     }
 }
@@ -87,6 +92,34 @@ bool LissajousItem::transformData2Liss()
         }
     }
     return true;
+}
+
+QColor LissajousItem::getBorderColor() const
+{
+    return m_borderColor;
+}
+
+void LissajousItem::setBorderColor(const QColor &borderColor)
+{
+    if(m_borderColor != borderColor){
+        m_borderColor = borderColor;
+        Q_EMIT borderColorChanged();
+    }
+
+}
+
+QColor LissajousItem::getBgrColor() const
+{
+    return m_bgrColor;
+}
+
+void LissajousItem::setBgrColor(const QColor &bgrColor)
+{
+    if(m_bgrColor != bgrColor){
+        m_bgrColor = bgrColor;
+        Q_EMIT bgrColorChanged();
+    }
+
 }
 
 bool LissajousItem::multiYearMode() const

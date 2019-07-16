@@ -51,31 +51,6 @@ void TubeHandler::setScale(const int scale)
     }
 }
 
-int TubeHandler::getStripWidth() const
-{
-    return m_stripWidth;
-}
-
-void TubeHandler::setStripWidth(const int width)
-{
-    if(m_stripWidth != width){
-        m_stripWidth = width;
-        Q_EMIT stripWidthChanged();
-    }
-}
-
-int TubeHandler::getStripHeight() const
-{
-    return m_stripHeight;
-}
-
-void TubeHandler::setStripHeight(const int height)
-{
-    if(m_stripHeight != height){
-        m_stripHeight = height;
-        Q_EMIT stripHeightChanged();
-    }
-}
 
 int TubeHandler::getCursorWidth() const
 {
@@ -94,7 +69,7 @@ inline int stripPoint(const int y, const int height, const int scale){
     return pt;
 }
 
-static int formatBuff(TubeData *tube, char *buff,int nbyte)
+int TubeHandler::formatBuff(char *buff,int nbyte)
 {
     int n=0;
     short *p,*q;
@@ -109,114 +84,24 @@ static int formatBuff(TubeData *tube, char *buff,int nbyte)
         short x = htons(*p++);
         short y = htons(*p++);
 
-        if(tube->channels.find(ch) == tube->channels.end()){
-            ChannelPtr chanObj(new Channel(QString::number(ch))); //Temporarily set channel name equals to chanOrder
+        if(m_tube->channels.find(ch) == m_tube->channels.end()){
+            ChannelPtr chanObj(new Channel(QString::number(ch), this)); //Temporarily set channel name equals to chanOrder
             chanObj->add(x, y);
-            tube->channels[ch] = chanObj;
+            m_tube->channels[ch] = chanObj;
         }else{
-            Channel *chanObj = tube->channels[ch].data();
+            Channel *chanObj = m_tube->channels[ch].data();
             chanObj->add(x, y);
         }
 
-        if(++ch == tube->nraw)
+        if(++ch == m_tube->nraw)
         {
             ch = 0;
             n++;
-            if(++last >= tube->npt) last = 0;
+            if(++last >= m_tube->npt) last = 0;
         }
     }
 
     return(n);
-}
-
-
-int TubeHandler::getDrawPointList(const int chan,
-                                  const int xavg_p)
-{
-    Q_ASSERT(!m_tube.isNull() || m_tube->channels.find(chan) != m_tube->channels.end());
-    qDebug() << "Chan idx:" << chan << " Xvag_point: " << xavg_p << " Width: " << m_stripWidth << " height: " << m_stripHeight;
-    int j;
-    int cent,x0,x,xmax,xmin;
-    int a,b,c;
-    short vxavg,vyavg;
-    int pix;
-    int pt0;
-    vxavg = vyavg = 0;
-    const int scaleMax = maxScale(m_stripHeight);
-    if(m_scale > scaleMax) m_scale = scaleMax;
-    pt0 = m_scale * m_stripHeight - 1;
-
-    const int FACTOR = 100;
-    float theta = M_PI * 0/180.0;
-    const int span = 2784;
-    a = -(FACTOR * m_stripWidth * qSin(theta));
-    b = FACTOR * m_stripWidth * qCos(theta);
-    c = FACTOR * span;
-
-    Channel* channel = m_tube->channels[chan].data();
-
-    //cal xavg point
-    int dpt = stripPoint(xavg_p, m_stripHeight, m_scale);
-    if(dpt < 0 || dpt >= channel->getData().size()){ //invalid dpt then calculate avg data
-        AnserGlobal::calAvgXY(channel, vxavg, vyavg);
-    }else{
-       const QPoint& data = channel->at(dpt);
-       vxavg = static_cast<short>(data.x());
-       vyavg = static_cast<short>(data.y());
-    }
-    ChannelParam& cp = channel->getCp();
-    cp.xavg = vxavg;
-    cp.yavg = vyavg;
-    pix = 0;
-    cent = m_stripWidth/2;
-
-    if(pt0 >= 0 && pt0 < m_tube->npt)
-        {
-        x0 = cent + (a*(channel->at(pt0).x()-vxavg) + b*(channel->at(pt0).y()-vyavg))/c;
-        }
-    else
-        x0 = cent;
-    pt0--;
-/* move to first point */
-
-    points.clear();
-    points.push_back(QPoint(x0, pix));
-
-    while(pix < m_stripHeight)
-        {
-/* find the min and max on this pixel */
-        x = xmin = xmax = x0;
-        for(j = 1; j < m_scale; ++j)
-            {
-            if(pt0 >= 0 && pt0 < m_tube->npt)
-                {
-                x = cent + (a*(channel->at(pt0).x()-vxavg) + b*(channel->at(pt0).y()-vyavg))/c;
-                }
-            else
-                x = cent;
-            pt0--;
-            if(x < xmin)
-                xmin = x;
-            else if(x > xmax)
-                xmax = x;
-            }
-
-        if(pt0 >= 0 && pt0 < m_tube->npt)
-            {
-            x0 = cent + (a*(channel->at(pt0).x()-vxavg) + b*(channel->at(pt0).y()-vyavg))/c;
-            }
-        else
-            x0 = cent;
-
-        pt0--;
-        points.push_back(QPoint(xmin, pix));
-        points.push_back(QPoint(xmax, pix));
-        points.push_back(QPoint(x, pix));
-        points.push_back(QPoint(x0, ++pix));
-
-    }
-    qDebug() << "Size of point array: " << points.size();
-    return points.size();
 }
 
 QPoint TubeHandler::getPoint(const int i)
@@ -231,11 +116,6 @@ QPoint TubeHandler::getExpPoint(const int i)
     return ePoints[i];
 }
 
-QPoint TubeHandler::getLissPoint(const int i)
-{
-    if(i < 0 || i >= lPoints.size()) return QPoint(0, 0);
-    return lPoints[i];
-}
 
 int TubeHandler::maxScale(const int height) const
 {
@@ -324,72 +204,11 @@ int TubeHandler::calExpPoints(const int chan, bool leftside)
     return ePoints.size();
 }
 
-int TubeHandler::calLissPoints(const int chan)
-{
-    if(m_tube.isNull()) return 0;
-    if(m_tube->channels.find(chan) == m_tube->channels.end()) return 0;
-
-
-    int k;
-    int a,b,c,xcent,ycent;
-    int vx,vy,vxavg,vyavg;
-    int x1, y1;
-    if(m_Npt < 2)
-        return 0;
-    if(m_tube.data() == nullptr ||
-       m_tube->channels.find(chan) == m_tube->channels.end())
-    {
-        return 0;
-    }
-    /* get raw data pointers */
-    Channel* channel = m_tube->channels[chan].data();
-    ChannelParam& cp = channel->getCp();
-    if(cp.xavg == 0){
-        AnserGlobal::calAvgXY(channel, cp.xavg, cp.yavg);
-    }
-    vxavg = cp.xavg;
-    vyavg = cp.yavg;
-    /* get transformation coefficients */
-    const int FACTOR = 100;
-    float theta = M_PI * 0/180.0;
-    const int span = 2784;
-    a = FACTOR * m_lissWidth * cos(theta);
-    b = FACTOR * m_lissWidth * sin(theta);
-    c = FACTOR * span;
-
-    if( c==0) c=1;
-    xcent = m_lissWidth/2;
-    ycent = m_lissHeight/2;
-
-    /* find points (NOTE: positive y axis points downward) */
-    int pt0 = m_Pt0;
-
-
-
-    // preset points for XDrawLine routine
-
-
-    lPoints.clear();
-    for(k = 0; k < m_Npt; ++k)
-    {
-        if(++pt0 >= m_tube->npt) pt0=0;
-
-        vx = channel->at(pt0).x() - vxavg;
-        vy = channel->at(pt0).y() - vyavg;
-        x1 = xcent + (a*vx + b*vy)/c;
-        y1 = ycent + (b*vx - a*vy)/c;
-        lPoints.push_back(QPoint(x1, y1));
-    }
-
-    return lPoints.size();
-}
-
 
 void TubeHandler::setTubeFile(const QString &path)
 {
     tubeFile = path;
 }
-
 
 bool TubeHandler::loadTube()
 {
@@ -433,7 +252,7 @@ bool TubeHandler::loadTube()
 
     while((count = in.readRawData(buff, readSize)) > 0 && dataCount > 0)
     {
-        total_samples += formatBuff(m_tube.data(), buff, count);
+        total_samples += formatBuff(buff, count);
 
         total_bytes += count;
         dataCount -= count;
@@ -444,6 +263,7 @@ bool TubeHandler::loadTube()
 
     for(; it != m_tube->channels.end(); it++){
         Channel* ch = it.value().data();
+        ch->setRawNpt(m_tube->raw_npt);
         //Update dataset Id to channel in order to support multi-set
         //Use inspected year stored in tube header for dataset id
         int year = QDateTime::fromTime_t(m_tube->hdr.tic_time).date().year();
@@ -548,32 +368,6 @@ void TubeHandler::setPt0(int Pt0)
     if(m_Pt0 != Pt0){
         m_Pt0 = Pt0;
         Q_EMIT pt0Changed();
-    }
-}
-
-int TubeHandler::getLissHeight() const
-{
-    return m_lissHeight;
-}
-
-void TubeHandler::setLissHeight(int lissHeight)
-{
-    if(m_lissHeight != lissHeight){
-        m_lissHeight = lissHeight;
-        Q_EMIT lissHeightChanged();
-    }
-}
-
-int TubeHandler::getLissWidth() const
-{
-    return m_lissWidth;
-}
-
-void TubeHandler::setLissWidth(int lissWidth)
-{
-    if(m_lissWidth != lissWidth){
-        m_lissWidth = lissWidth;
-        Q_EMIT lissWidthChanged();
     }
 }
 

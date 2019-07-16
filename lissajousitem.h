@@ -2,6 +2,7 @@
 #define LISSAJOUSITEM_H
 
 #include <QQuickPaintedItem>
+#include <QColor>
 #include "channel.h"
 
 class LissajousItem : public QQuickPaintedItem
@@ -10,6 +11,8 @@ class LissajousItem : public QQuickPaintedItem
     Q_PROPERTY(int chanIndex READ chanIdx WRITE setChanIdx NOTIFY chanIdxChanged)
     Q_PROPERTY(int startPoint READ startPoint WRITE setStartPoint NOTIFY startPointChanged)
     Q_PROPERTY(int endPoint READ endPoint WRITE setEndPoint NOTIFY endPointChanged)
+    Q_PROPERTY(QColor bgrColor READ getBgrColor WRITE setBgrColor NOTIFY bgrColorChanged)
+    Q_PROPERTY(QColor borderColor READ getBorderColor WRITE setBorderColor NOTIFY borderColorChanged)
 
     typedef QMap<QString, QVector<QPointF>> LissPointMap;
     typedef QMap<QString, Channel*> LissDataMap;
@@ -29,10 +32,18 @@ public:
     bool multiYearMode() const;
     void setMultiYearMode(bool multiYearMode);
 
+    QColor getBgrColor() const;
+    void setBgrColor(const QColor &getBgrColor);
+
+    QColor getBorderColor() const;
+    void setBorderColor(const QColor &borderColor);
+
 signals:
     void chanIdxChanged();
     void startPointChanged();
     void endPointChanged();
+    void bgrColorChanged();
+    void borderColorChanged();
 public slots:
     void pushData(Channel* channel);
 private:
@@ -45,6 +56,8 @@ private:
     bool m_multiYearMode;
     LissDataMap m_data; //support draw multiple data set with key = year
     LissPointMap m_points;
+    QColor m_bgrColor;
+    QColor m_borderColor;
 
 };
 

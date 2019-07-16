@@ -18,7 +18,7 @@ Item {
     property TubeHandler tube
     property Channel chan: null
     onChannelChanged: {
-        lissajous.pushData(tube.getChannel(channel));
+
     }
 
     ColumnLayout{
@@ -40,19 +40,6 @@ Item {
             }
         }
 
-//        Rectangle{
-//            id: lissajous
-//            Layout.fillHeight: true
-//            Layout.fillWidth: true
-//            Layout.alignment: Qt.AlignTop
-//            color: Global.LissajousColor
-//            border.color: Global.LissajousBorder
-//            Canvas{
-//                id: lissCanvas
-//                anchors.fill: parent
-//                onPaint: drawLissajous()
-//            }
-//        }
         LissajousItem{
             id: lissajous
             Layout.fillHeight: true
@@ -89,13 +76,11 @@ Item {
     Connections{
         target: tube
         onPt0Changed:{
-//            updateLissajous()
             lissajous.startPoint = tube.pt0
             lissajous.endPoint = (tube.pt0 + tube.npt)
          }
         onNptChanged:{
             lissajous.endPoint = (tube.pt0 + tube.npt)
-//            updateLissajous()
         }
     }
 
@@ -103,7 +88,7 @@ Item {
         target: switchChan
         onCurrentChanChanged: {
             expandStripChart.updateExpChart()
-            //updateLissajous()
+            lissajous.pushData(tube.getChannel(channel));
         }
     }
 
@@ -111,27 +96,6 @@ Item {
         expandStripChart.requestUpdateExpWin()
     }
 
-    function updateLissajous(){
-        lissCanvas.requestPaint()
-    }
-
-    function drawLissajous()
-    {
-        var ctx = lissCanvas.getContext("2d");
-        ctx.reset()
-        var nPoints = tube.calLissPoints(channel)
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "white"
-        ctx.beginPath()
-        for(var i = 0; i < nPoints - 1; i++){
-            var point = tube.getLissPoint(i)
-            var nextPoint = tube.getLissPoint(i+1);
-            ctx.moveTo(point.x, point.y);
-            ctx.lineTo(nextPoint.x, nextPoint.y)
-        }
-        ctx.stroke()
-
-    }
 }
 
 /*##^## Designer {

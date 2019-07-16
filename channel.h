@@ -15,6 +15,7 @@ class Channel : public QObject{
     Q_PROPERTY(int span READ getSpan WRITE setSpan NOTIFY spanChanged)
 public:
     explicit Channel(const QString& name_ = QString(), QObject *parent = nullptr);
+    ~Channel();
     void add(const short x, const short y);
     void clear();
     const QPoint &at(const int i) const;
