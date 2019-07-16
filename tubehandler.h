@@ -14,7 +14,6 @@ class TubeHandler : public QObject
     Q_PROPERTY(QString tubeFile READ getTubeFile WRITE setTubeFile)
     Q_PROPERTY(QList<QObject*> channels READ getChannels NOTIFY channelsChanged)
     Q_PROPERTY(int scale READ getScale WRITE setScale NOTIFY scaleChanged)
-    Q_PROPERTY(int cursorWidth READ getCursorWidth NOTIFY cursorWidthChanged)
     Q_PROPERTY(int expTp READ getExpTp WRITE setExpTp NOTIFY expTpChanged)
     Q_PROPERTY(int expWidth READ getExpWidth WRITE setExpWidth NOTIFY expWidthChanged)
     Q_PROPERTY(int expHeight READ getExpHeight WRITE setExpHeight NOTIFY expHeightChanged)
@@ -28,13 +27,11 @@ public:
     QString getTubeFile();
     int getScale() const;
     void setScale(const int scale);
-    int getCursorWidth() const;
     Q_INVOKABLE Channel *getChannel(const int idx) const;
     Q_INVOKABLE QPoint getPoint(const int i);
     Q_INVOKABLE QPoint getExpPoint(const int i);
     Q_INVOKABLE int maxScale(const int height) const;
-    Q_INVOKABLE int getCursorWidth(const int currentPix, const int expWidth);
-    Q_INVOKABLE int pixToDpt(const int pix);
+
     Q_INVOKABLE int calExpPoints(const int chan, bool leftside);
 
     int getExpTp() const;
@@ -60,7 +57,6 @@ signals:
     void scaleChanged();
     void stripWidthChanged();
     void stripHeightChanged();
-    void cursorWidthChanged();
     void expTpChanged();
     void expWidthChanged();
     void expHeightChanged();
@@ -83,7 +79,6 @@ private:
     QVector<QPoint> ePoints;
     QMap<int, int> m_point2PixMap;
     int m_scale, m_stripWidth, m_stripHeight;
-    int m_cursorWidth;
     int m_expTp, m_expHeight, m_expWidth;
     int m_lissWidth, m_lissHeight;
     int m_Pt0, m_Npt;

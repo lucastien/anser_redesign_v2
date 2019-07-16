@@ -72,8 +72,11 @@ Item {
         }
     }
     function updateDpt(centerCursor){
-        anserFooterBar.dpt = tube.pixToDpt(centerCursor);
+        anserFooterBar.dpt = stripRepeater.itemAt(0).pixToDpt(centerCursor);
         tube.expTp = anserFooterBar.dpt - tube.expHeight/2
+        for(var i = 0; i < lissRepeater.count; i++){
+            lissRepeater.itemAt(i).expTp = anserFooterBar.dpt - tube.expHeight/2
+        }
         tube.npt = lissRepeater.itemAt(0).expWin*2
         tube.pt0 = tube.expTp + tube.expHeight/2 - tube.npt;
     }

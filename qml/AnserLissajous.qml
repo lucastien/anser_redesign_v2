@@ -17,9 +17,8 @@ Item {
 
     property TubeHandler tube
     property Channel chan: null
-    onChannelChanged: {
 
-    }
+    property alias expTp: expandStripChart.expTp
 
     ColumnLayout{
         anchors.fill: parent
@@ -87,7 +86,8 @@ Item {
     Connections{
         target: switchChan
         onCurrentChanChanged: {
-            expandStripChart.updateExpChart()
+            //expandStripChart.channel = channel
+            //expandStripChart.updateExpChart()
             lissajous.pushData(tube.getChannel(channel));
         }
     }

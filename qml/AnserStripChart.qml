@@ -20,6 +20,9 @@ Item {
 
     signal scaleChanged(int inc)
 
+    function pixToDpt(center){
+        return stripArea.pixToDpt(center)
+    }
 
     ColumnLayout{
         anchors.fill: parent
@@ -40,6 +43,9 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             avgPoint: 0
+            onCursorWidthChanged: {
+                stripChart.cursorWidth = stripArea.cursorWidth
+            }
             Rectangle{
                 id: cursorRect
                 width: stripArea.width
@@ -49,7 +55,7 @@ Item {
                 x: 0
                 y: stripArea.height/2
                 onYChanged: stripChart.cursorY = y
-                onHeightChanged: stripChart.cursorWidth = height;
+                //onHeightChanged: stripChart.cursorWidth = height;
 
             }
 
@@ -88,26 +94,12 @@ Item {
         target: tube
         onScaleChanged: {
             var centPix = cursorRect.y + cursorRect.height/2
-            tube.getCursorWidth(centPix, stripChart.expStripHeight)
+            stripArea.calCursorWidth(centPix, stripChart.expStripHeight)
             stripArea.scale = tube.scale;
             drawStrip();
         }
     }
 
-    Connections{
-        target: tube
-        onCursorWidthChanged: {
-            cursorRect.height = tube.cursorWidth
-        }
-    }
-
-    function clearCanvas(){
-        console.log("Clear the canvas");
-        var ctx = myCanvas.getContext("2d")
-        ctx.reset()
-        points = 0
-        myCanvas.requestPaint()
-    }
 
     function drawStrip(){
         console.log("Call drawing stripchart on channel " + currentChan)

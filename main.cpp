@@ -13,6 +13,7 @@
 #include "tubehandler.h"
 #include "lissajousitem.h"
 #include "stripchartitem.h"
+#include "expstripchartitem.h"
 
 int main(int argc, char *argv[])
 {
@@ -33,6 +34,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<TubeHandler>("TubeHandler", 1, 0, "TubeHandler");
     qmlRegisterType<LissajousItem>("App", 1, 0, "LissajousItem");
     qmlRegisterType<StripChartItem>("App", 1, 0, "StripChartItem");
+    qmlRegisterType<ExpStripChartItem>("App", 1, 0, "ExpStripChartItem");
+
     qmlRegisterUncreatableType<Channel>("App", 1, 0, "Channel", QLatin1String("Cannot create objects of type Channel"));
 
     QQmlApplicationEngine engine;

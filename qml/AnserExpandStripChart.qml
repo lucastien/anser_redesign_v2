@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 import TubeHandler 1.0
 import "js/AnserGlobal.js" as Global
-
+import App 1.0
 Item {
     id: expandStripChart
     property alias expWidth: xComp.width
@@ -13,35 +13,64 @@ Item {
     property bool enableDrawing: false
     property int channel
     property int expWin: 20
+    property int expTp: -1
+    onExpTpChanged: {
+        console.log("updated expTp = " + expTp)
+        xComp.expTp = expTp
+        yComp.expTp = expTp
+        updateExpChart()
+    }
+    onChannelChanged: {
+        xComp.pushData(tube.getChannel(channel))
+        yComp.pushData(tube.getChannel(channel))
+    }
     Rectangle{
         id: xyComp
         anchors.fill: parent
-        Rectangle{
+//        Rectangle{
+//            id: xComp
+//            height: xyComp.height
+//            width: xyComp.width/2
+//            anchors.left: xyComp.left
+//            color: Global.LissajousColor
+//            border.color: Global.LissajousBorder
+//            Canvas{
+//                id: xExpCanvas
+//                anchors.fill: parent
+//                onPaint: drawExpChart(true)
+//            }
+//        }
+//        Rectangle{
+//            id: yComp
+//            height: xyComp.height
+//            width: xyComp.width/2
+//            anchors.left: xComp.right
+//            color: Global.LissajousColor
+//            border.color: Global.LissajousBorder
+//            Canvas{
+//                id: yExpCanvas
+//                anchors.fill: parent
+//                onPaint: drawExpChart(false)
+//            }
+//        }
+        ExpStripChartItem{
             id: xComp
+            xComponent: true
             height: xyComp.height
             width: xyComp.width/2
             anchors.left: xyComp.left
-            color: Global.LissajousColor
-            border.color: Global.LissajousBorder
-            Canvas{
-                id: xExpCanvas
-                anchors.fill: parent
-                onPaint: drawExpChart(true)
-            }
+
         }
-        Rectangle{
+
+        ExpStripChartItem{
             id: yComp
+            xComponent: false
             height: xyComp.height
             width: xyComp.width/2
             anchors.left: xComp.right
-            color: Global.LissajousColor
-            border.color: Global.LissajousBorder
-            Canvas{
-                id: yExpCanvas
-                anchors.fill: parent
-                onPaint: drawExpChart(false)
-            }
+
         }
+
         Canvas{
             id: winExpCanvas
             anchors.fill: parent
@@ -70,10 +99,14 @@ Item {
 
     }
 
-    Connections{
-        target: tube
-        onExpTpChanged: updateExpChart()
-    }
+//    Connections{
+//        target: tube
+//        onExpTpChanged:{
+//            xComp.expTp = tube.expTp
+//            yComp.expTp = tube.expTp
+//            updateExpChart()
+//        }
+//    }
 
     function requestUpdateExpWin(){
         winExpCanvas.requestPaint()
@@ -87,9 +120,8 @@ Item {
     }
 
     function updateExpChart(){
-        enableDrawing = true;
-        xExpCanvas.requestPaint();
-        yExpCanvas.requestPaint();
+        xComp.update()
+        yComp.update()
     }
 
     function drawExpWin(){

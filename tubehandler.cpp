@@ -22,8 +22,7 @@ TubeHandler::TubeHandler(QObject *parent) : QObject(parent),
     m_chan(nullptr),
     tubeFile(QString())
 {
-    m_scale = 1;
-    m_cursorWidth = 0;
+    m_scale = 1;    
     m_expTp = 0;
     qDebug() << "Tube handler init";
 }
@@ -51,23 +50,6 @@ void TubeHandler::setScale(const int scale)
     }
 }
 
-
-int TubeHandler::getCursorWidth() const
-{
-    return m_cursorWidth;
-}
-
-inline int stripY(const int hs, const int tp, const int pt, const int scale)
-{
-    int y = (hs - 1) - (pt - tp)/scale;
-    return y;
-}
-
-inline int stripPoint(const int y, const int height, const int scale){
-    int sc_tp = 0;// temporary set sc_tp = 0
-    int pt  = sc_tp + (height-1-y) * scale;
-    return pt;
-}
 
 int TubeHandler::formatBuff(char *buff,int nbyte)
 {
@@ -125,25 +107,7 @@ int TubeHandler::maxScale(const int height) const
     return -1;
 }
 
-int TubeHandler::getCursorWidth(const int currentPix, const int expWidth)
-{
 
-    int center = stripPoint(currentPix, m_stripHeight, m_scale);
-
-    int expTp = center - expWidth/2;
-
-    int cymin = stripY(m_stripHeight, 0, expTp+expWidth-1, m_scale);
-    int cymax = stripY(m_stripHeight, 0, expTp, m_scale);
-    m_cursorWidth = abs(cymax - cymin);
-    Q_EMIT cursorWidthChanged();
-    qDebug() << "m_cursorWidth = " << m_cursorWidth;
-    return m_cursorWidth;
-}
-
-int TubeHandler::pixToDpt(const int pix)
-{
-    return stripPoint(pix, m_stripHeight, m_scale);
-}
 
 int TubeHandler::calExpPoints(const int chan, bool leftside)
 {

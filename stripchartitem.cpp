@@ -126,6 +126,19 @@ bool StripChartItem::transformData2Strip()
     return true;
 }
 
+int StripChartItem::cursorWidth() const
+{
+    return m_cursorWidth;
+}
+
+void StripChartItem::setCursorWidth(int cursorWidth)
+{
+    if(m_cursorWidth != cursorWidth){
+        m_cursorWidth = cursorWidth;
+        Q_EMIT cursorWidthChanged();
+    }
+}
+
 int StripChartItem::avgPoint() const
 {
     return m_avgPoint;
@@ -149,6 +162,30 @@ void StripChartItem::pushData(Channel *chan)
         }
         update();
     }
+}
+
+int StripChartItem::pixToDpt(const int pix) const
+{
+    return stripPoint(pix, height(), m_scale);
+}
+
+inline int stripY(const int hs, const int tp, const int pt, const int scale)
+{
+    int y = (hs - 1) - (pt - tp)/scale;
+    return y;
+}
+
+int StripChartItem::calCursorWidth(const int currentPix, const int expWidth)
+{
+
+    int center = stripPoint(currentPix, height(), m_scale);
+
+    int expTp = center - expWidth/2;
+
+    int cymin = stripY(height(), 0, expTp+expWidth-1, m_scale);
+    int cymax = stripY(height(), 0, expTp, m_scale);
+    setCursorWidth(abs(cymax - cymin));
+    return m_cursorWidth;
 }
 
 int StripChartItem::scale() const

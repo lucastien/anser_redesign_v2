@@ -17,6 +17,7 @@ SOURCES += \
         channel.cpp \
         channelhandler.cpp \
         disktablemodel.cpp \
+        expstripchartitem.cpp \
         lissajousitem.cpp \
         main.cpp \
         mountlisthandler.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     data.h \
     diskitem.h \
     disktablemodel.h \
+    expstripchartitem.h \
     global.h \
     lissajousitem.h \
     mountlisthandler.h \
