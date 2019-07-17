@@ -2,17 +2,44 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import TubeHandler 1.0
+import App 1.0
 Item {
     id: stripContentItem
     property TubeHandler tube
 
     property int numStrip: 3
     property int numLiss: 3
+    property int centerCursor: stripRepeater.itemAt(0).cursorY +  stripRepeater.itemAt(0).cursorWidth/2 //the current center of the cursor on strip chart
 
-    Component.onCompleted: {
-        console.log("Strip chart initialize")
-        tube.expHeight = lissRepeater.itemAt(0).expHeight
-        tube.expWidth = lissRepeater.itemAt(0).expWidth        
+    signal spanChanged()
+
+
+    onCenterCursorChanged: updateDpt()
+
+    function updateDpt(){
+        anserFooterBar.dpt = stripRepeater.itemAt(0).pixToDpt(centerCursor);
+        for(var i = 0; i < lissRepeater.count; i++){
+            lissRepeater.itemAt(i).centerCursor = centerCursor;
+            lissRepeater.itemAt(i).updateExpWin();
+        }
+    }
+
+    function updateStripChart(){
+        for(var i = 0; i < stripRepeater.count; i++){
+            stripRepeater.itemAt(i).drawStrip()
+        }
+    }
+
+    function updateLissajous(){
+        for(var i = 0; i < lissRepeater.count; i++){
+            lissRepeater.itemAt(i).updateLissAndExp()
+        }
+    }
+
+    function updateScreen(){
+        updateDpt()
+        updateStripChart()
+        updateLissajous()
     }
 
     RowLayout{
@@ -44,8 +71,7 @@ Item {
                             stripRepeater.itemAt(i).cursorY = cursorY
                         }
                     }
-                    var center = cursorY + cursorWidth/2;
-                    updateDpt(center)
+                    centerCursor = cursorY + cursorWidth/2;
                 }
 
             }
@@ -64,26 +90,27 @@ Item {
                     for(var i = 0; i < lissRepeater.count; i++){
                         if(i !== index){
                             lissRepeater.itemAt(i).expWin = expWin
-                            lissRepeater.itemAt(i).updateExpWin()
                         }
                     }
+                }
+                onSpanChanged:{
+                    for(var i = 0; i < stripRepeater.count; i++){
+                         if(stripRepeater.itemAt(i).currentChan === channel){
+                             stripRepeater.itemAt(i).drawStrip();
+                         }
+                    }
+                }
+                onRotChanged: {
+                   for(var i = 0; i < stripRepeater.count; i++){
+                        if(stripRepeater.itemAt(i).currentChan === channel){
+                            stripRepeater.itemAt(i).drawStrip();
+                        }
+                   }
                 }
             }
         }
     }
-    function updateDpt(centerCursor){
-        anserFooterBar.dpt = stripRepeater.itemAt(0).pixToDpt(centerCursor);
-        tube.expTp = anserFooterBar.dpt - tube.expHeight/2
-        for(var i = 0; i < lissRepeater.count; i++){
-            lissRepeater.itemAt(i).expTp = anserFooterBar.dpt - tube.expHeight/2
-        }
-        tube.npt = lissRepeater.itemAt(0).expWin*2
-        tube.pt0 = tube.expTp + tube.expHeight/2 - tube.npt;
-    }
 
-    function updateStripChart(){
-        for(var i = 0; i < stripRepeater.count; i++){
-            stripRepeater.itemAt(i).drawStrip()
-        }
-    }
+
+
 }

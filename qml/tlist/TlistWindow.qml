@@ -51,8 +51,4 @@ ApplicationWindow {
 
     }
 
-    function getPoint(p){
-        return tlistToolBar.getPoint(p)
-    }
-
 }

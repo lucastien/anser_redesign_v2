@@ -14,52 +14,60 @@ Item {
     property int channel
     property int expWin: 20
     property int expTp: -1
-    onExpTpChanged: {
-        console.log("updated expTp = " + expTp)
-        xComp.expTp = expTp
-        yComp.expTp = expTp
+    onExpTpChanged: {        
         updateExpChart()
     }
     onChannelChanged: {
+        updateExpChart()
+    }
+
+    function requestUpdateExpWin(){
+        winExpCanvas.requestPaint()
+    }
+
+    function updateExpWin(mouseY){
+        expandStripChart.expWin = Math.abs(xyComp.height/2 - mouseY)
+        winExpCanvas.requestPaint()
+    }
+
+    function updateExpChart(){
+        xComp.expTp = expTp
+        yComp.expTp = expTp
         xComp.pushData(tube.getChannel(channel))
         yComp.pushData(tube.getChannel(channel))
+        requestUpdateExpWin()
     }
+
+    function drawExpWin(){
+        var ctx = winExpCanvas.getContext("2d")
+        ctx.reset()
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "red"
+        ctx.beginPath()
+        //draw center line
+        ctx.moveTo(0, xyComp.height/2);
+        ctx.lineTo(xyComp.width, xyComp.height/2)
+        //draw lower line
+        ctx.moveTo(0, xyComp.height/2 + expWin);
+        ctx.lineTo(xyComp.width, xyComp.height/2 + expWin)
+        //draw upper line
+        ctx.moveTo(0, xyComp.height/2 - expWin);
+        ctx.lineTo(xyComp.width, xyComp.height/2 - expWin)
+
+        ctx.stroke()
+    }
+
     Rectangle{
         id: xyComp
         anchors.fill: parent
-//        Rectangle{
-//            id: xComp
-//            height: xyComp.height
-//            width: xyComp.width/2
-//            anchors.left: xyComp.left
-//            color: Global.LissajousColor
-//            border.color: Global.LissajousBorder
-//            Canvas{
-//                id: xExpCanvas
-//                anchors.fill: parent
-//                onPaint: drawExpChart(true)
-//            }
-//        }
-//        Rectangle{
-//            id: yComp
-//            height: xyComp.height
-//            width: xyComp.width/2
-//            anchors.left: xComp.right
-//            color: Global.LissajousColor
-//            border.color: Global.LissajousBorder
-//            Canvas{
-//                id: yExpCanvas
-//                anchors.fill: parent
-//                onPaint: drawExpChart(false)
-//            }
-//        }
+
         ExpStripChartItem{
             id: xComp
             xComponent: true
             height: xyComp.height
             width: xyComp.width/2
             anchors.left: xyComp.left
-
+            fillColor: Global.LissajousColor
         }
 
         ExpStripChartItem{
@@ -68,7 +76,7 @@ Item {
             height: xyComp.height
             width: xyComp.width/2
             anchors.left: xComp.right
-
+            fillColor: Global.LissajousColor
         }
 
         Canvas{
@@ -99,78 +107,7 @@ Item {
 
     }
 
-//    Connections{
-//        target: tube
-//        onExpTpChanged:{
-//            xComp.expTp = tube.expTp
-//            yComp.expTp = tube.expTp
-//            updateExpChart()
-//        }
-//    }
 
-    function requestUpdateExpWin(){
-        winExpCanvas.requestPaint()
-    }
-
-    function updateExpWin(mouseY){
-        expandStripChart.expWin = Math.abs(xyComp.height/2 - mouseY)
-        tube.npt = expandStripChart.expWin * 2
-        tube.pt0 = tube.expTp + tube.expHeight/2 - expandStripChart.expWin;
-        winExpCanvas.requestPaint()
-    }
-
-    function updateExpChart(){
-        xComp.update()
-        yComp.update()
-    }
-
-    function drawExpWin(){
-        var ctx = winExpCanvas.getContext("2d")
-        ctx.reset()
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "red"
-        ctx.beginPath()
-        //draw center line
-        ctx.moveTo(0, xyComp.height/2);
-        ctx.lineTo(xyComp.width, xyComp.height/2)
-        //draw lower line
-        ctx.moveTo(0, xyComp.height/2 + expWin);
-        ctx.lineTo(xyComp.width, xyComp.height/2 + expWin)
-        //draw upper line
-        ctx.moveTo(0, xyComp.height/2 - expWin);
-        ctx.lineTo(xyComp.width, xyComp.height/2 - expWin)
-
-        ctx.stroke()
-    }
-
-    function drawExpChart(left)
-    {
-        var ctx = createContext(left);
-        ctx.reset()
-        if(enableDrawing){
-            var nPoints = tube.calExpPoints(channel, left)
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = "white"
-            ctx.beginPath()
-            for(var i = 0; i < nPoints - 1; i++){
-                var point = tube.getExpPoint(i)
-                var nextPoint = tube.getExpPoint(i+1);
-                ctx.moveTo(point.x, point.y);
-                ctx.lineTo(nextPoint.x, nextPoint.y)
-            }
-            ctx.stroke()
-        }
-
-    }
-    function createContext(left){
-        var ctx;
-        if(left){
-            ctx = xExpCanvas.getContext("2d")
-        }else{
-            ctx = yExpCanvas.getContext("2d")
-        }
-        return ctx;
-    }
 
 }
 

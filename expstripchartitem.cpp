@@ -5,52 +5,13 @@
 #include "anserglobal.h"
 
 ExpStripChartItem::ExpStripChartItem(QQuickPaintedItem *parent):
-    QQuickPaintedItem (parent),
+    BaseChartItem(parent),
     m_expTp(0),
-    m_xComponent(false),
-    m_multiYearMode(false),
-    m_bgrColor("black"),
-    m_borderColor("#524d4d")
+    m_xComponent(false)
 {
 
 }
 
-
-void ExpStripChartItem::paint(QPainter *painter)
-{
-    painter->fillRect(0, 0, width(), height(), m_bgrColor);
-    painter->setPen(m_borderColor);
-    painter->drawRect(0, 0, width(), height());
-    if(transform() == true){
-        for (LissPointMap::iterator it = m_points.begin(); it != m_points.end(); it++) {
-            painter->setPen(QColor("white"));
-            const QVector<QPointF>& points = it.value();
-            for (int i = 0; i < points.count() - 1; ++i) {
-                painter->drawLine(points[i], points[i+1]);
-            }
-        }
-    }
-}
-
-QColor ExpStripChartItem::bgrColor() const
-{
-    return m_bgrColor;
-}
-
-void ExpStripChartItem::setBgrColor(const QColor &bgrColor)
-{
-    m_bgrColor = bgrColor;
-}
-
-QColor ExpStripChartItem::borderColor() const
-{
-    return m_borderColor;
-}
-
-void ExpStripChartItem::setBorderColor(const QColor &borderColor)
-{
-    m_borderColor = borderColor;
-}
 
 bool ExpStripChartItem::transform()
 {
@@ -78,14 +39,12 @@ bool ExpStripChartItem::transform()
         vxavg = cp.xavg;
         vyavg = cp.yavg;
 
-
         /* get transformation coefficients */
         const int FACTOR = 100;
         float theta = M_PI * cp.rot/180.0;
-        const int span = 2784;
         a = FACTOR * width() * qCos(theta);
         b = FACTOR * width() * qSin(theta);
-        c = FACTOR * span;
+        c = FACTOR * cp.span;
 
         cent = width()/2;
         if (c==0) c=1;
@@ -121,18 +80,6 @@ bool ExpStripChartItem::xComponent() const
 void ExpStripChartItem::setXComponent(bool xComponent)
 {
     m_xComponent = xComponent;
-}
-
-void ExpStripChartItem::pushData(Channel *chan)
-{
-    if(chan != nullptr){
-        if(!m_multiYearMode) m_data.clear();
-        LissDataMap::iterator dataIt = m_data.find(chan->getDataSetId());
-        if(dataIt == m_data.end()){
-            m_data[chan->getDataSetId()] = chan;
-        }
-        update();
-    }
 }
 
 int ExpStripChartItem::expTp() const

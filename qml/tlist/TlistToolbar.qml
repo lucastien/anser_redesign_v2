@@ -77,8 +77,4 @@ ToolBar{
         }
     }
 
-
-    function getPoint(p){
-        return tubeHandler.getPoint(p);
-    }
 }

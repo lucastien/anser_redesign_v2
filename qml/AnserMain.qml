@@ -22,6 +22,10 @@ ApplicationWindow {
 
     }    
 
+    function updateStripAndLiss(){
+        content.updateScreen();
+    }
+
     AnserBodyContent{
         id: content
         anchors.fill: parent
@@ -36,8 +40,8 @@ ApplicationWindow {
     TubeHandler{
         id: tubeH       
         onTubeLoaded:{
-            console.log("On tube loaded event")
-            updateStripChart()
+            console.log("The tube has been loaded successfully")
+            updateStripAndLiss()
         }
 
     }
@@ -48,8 +52,5 @@ ApplicationWindow {
         tube: anserMain.tubeHanlder
     }
 
-    function updateStripChart(){
-        console.log("Will update strip chart later")
-        content.updateStripChart()
-    }
+
 }

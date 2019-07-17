@@ -9,6 +9,8 @@ Channel::Channel(const QString& name_, QObject *parent):
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     memset(&cp, 0, sizeof (ChannelParam));
+    cp.span = 2784; //temporarily hard code since setup module is not implemented yet
+    cp.vcon = 0.001; //temporarily hard code since setup module is not implemented yet
 }
 
 Channel::~Channel()
@@ -89,6 +91,17 @@ int Channel::getRawNpt() const
 void Channel::setRawNpt(int rawNpt)
 {
     m_rawNpt = rawNpt;
+}
+
+float Channel::getVcon() const
+{
+    return cp.vcon;
+}
+
+void Channel::setVcon(float vcon)
+{
+    cp.vcon = vcon;
+    Q_EMIT vconChanged();
 }
 
 QString Channel::getDataSetId() const

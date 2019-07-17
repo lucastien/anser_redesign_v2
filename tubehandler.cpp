@@ -19,12 +19,9 @@
 static void fixHdr( TubeHeader *h);
 
 TubeHandler::TubeHandler(QObject *parent) : QObject(parent),
-    m_chan(nullptr),
-    tubeFile(QString())
+    tubeFile(QString()),
+    m_scale(1)
 {
-    m_scale = 1;    
-    m_expTp = 0;
-    qDebug() << "Tube handler init";
 }
 
 TubeHandler::~TubeHandler()
@@ -49,7 +46,6 @@ void TubeHandler::setScale(const int scale)
         Q_EMIT scaleChanged();
     }
 }
-
 
 int TubeHandler::formatBuff(char *buff,int nbyte)
 {
@@ -86,18 +82,6 @@ int TubeHandler::formatBuff(char *buff,int nbyte)
     return(n);
 }
 
-QPoint TubeHandler::getPoint(const int i)
-{
-    if(i < 0 || i >= points.size()) return QPoint(0, 0);
-    return points[i];
-}
-
-QPoint TubeHandler::getExpPoint(const int i)
-{
-    if(i < 0 || i >= ePoints.size()) return QPoint(0, 0);
-    return ePoints[i];
-}
-
 
 int TubeHandler::maxScale(const int height) const
 {
@@ -105,67 +89,6 @@ int TubeHandler::maxScale(const int height) const
         return m_tube->raw_npt/height;
     }
     return -1;
-}
-
-
-
-int TubeHandler::calExpPoints(const int chan, bool leftside)
-{
-    if(m_tube.isNull()) return 0;
-    if(m_tube->channels.find(chan) == m_tube->channels.end()) return 0;
-
-    int k;
-    short base;
-    int a,b,c,vxavg,vyavg,cent;
-    int vx,vy,pnt;
-    int x1, y1;
-
-    if(m_expHeight < 2)
-        return 0;
-    if(m_tube.data() == nullptr ||
-       m_tube->channels.find(chan) == m_tube->channels.end())
-    {
-        return 0;
-    }
-
-    // get raw data pointers
-    Channel* channel = m_tube->channels[chan].data();
-    ChannelParam& cp = channel->getCp();
-    if(cp.xavg == 0){
-        AnserGlobal::calAvgXY(channel, cp.xavg, cp.yavg);
-    }
-    vxavg = cp.xavg;
-    vyavg = cp.yavg;
-
-
-    /* get transformation coefficients */
-    const int FACTOR = 100;
-    float theta = M_PI * 0/180.0;
-    const int span = 2784;
-    a = FACTOR * m_expWidth * cos(theta);
-    b = FACTOR * m_expWidth * sin(theta);
-    c = FACTOR * span;
-
-    cent = m_expWidth/2;
-    if (c==0) c=1;
-
-    /* setup y coordinates */
-    base = (m_expHeight-1);
-    pnt = m_expTp;
-    ePoints.clear();
-    for(k = 0; k < m_expHeight; ++k){
-        y1 = base--;
-        vx = channel->at(pnt).x() - vxavg;
-        vy = channel->at(pnt).y() - vyavg;
-        if(leftside){
-            x1 = cent + (-b*vx + a*vy)/c;
-        }else {
-            x1 = cent + (a*vx + b*vy)/c;
-        }
-        ePoints.push_back(QPoint(x1, y1));
-        if(++pnt >= m_tube->raw_npt) pnt = 0;
-    }
-    return ePoints.size();
 }
 
 
@@ -278,18 +201,6 @@ void TubeHandler::calAvgData(const Channel& channel, short &vxavg, short &vyavg)
     vyavg = vyavg/m_tube->raw_npt;
 }
 
-int TubeHandler::getNpt() const
-{
-    return m_Npt;
-}
-
-void TubeHandler::setNpt(int Npt)
-{
-    if(m_Npt != Npt){
-        m_Npt = Npt;
-        Q_EMIT nptChanged();
-    }
-}
 
 QList<QObject *> TubeHandler::getChannels() const
 {
@@ -322,60 +233,7 @@ Channel *TubeHandler::getChannel(const int idx) const
     return nullptr;
 }
 
-int TubeHandler::getPt0() const
-{
-    return m_Pt0;
-}
 
-void TubeHandler::setPt0(int Pt0)
-{
-    if(m_Pt0 != Pt0){
-        m_Pt0 = Pt0;
-        Q_EMIT pt0Changed();
-    }
-}
-
-int TubeHandler::getExpHeight() const
-{
-    return m_expHeight;
-}
-
-void TubeHandler::setExpHeight(int expHeight)
-{
-    if(m_expHeight != expHeight){
-        m_expHeight = expHeight;
-        Q_EMIT expHeightChanged();
-    }
-
-}
-
-int TubeHandler::getExpWidth() const
-{
-    return m_expWidth;
-}
-
-void TubeHandler::setExpWidth(int expWidth)
-{
-    if(m_expWidth != expWidth){
-        m_expWidth = expWidth;
-        Q_EMIT expWidthChanged();
-    }
-
-}
-
-int TubeHandler::getExpTp() const
-{
-    return m_expTp;
-}
-
-void TubeHandler::setExpTp(int expTp)
-{
-    if(m_expTp != expTp){
-        m_expTp = expTp;
-        Q_EMIT expTpChanged();
-    }
-
-}
 
 int TubeHandler::sizeHeader(TubeHeader *hdr, QDataStream &in)
 {

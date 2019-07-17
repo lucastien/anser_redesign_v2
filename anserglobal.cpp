@@ -17,3 +17,15 @@ void AnserGlobal::calAvgXY(const Channel *channel, short &vxavg, short &vyavg)
     vxavg = vxavg/rawNpt;
     vyavg = vyavg/rawNpt;
 }
+
+int AnserGlobal::boundSpan(const int span)
+{
+    int tmpSpan = span;
+    int min_span = 100;
+    if(tmpSpan < min_span)
+        tmpSpan  = min_span;
+    else if(tmpSpan > USHRT_MAX)
+        tmpSpan = USHRT_MAX;
+    return(tmpSpan);
+
+}

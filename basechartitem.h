@@ -17,7 +17,7 @@ public:
     void setBorderColor(const QColor &borderColor);
     // QQuickPaintedItem interface
     virtual void paint(QPainter *painter);
-    virtual void pushData(Channel* channel);
+    Q_INVOKABLE virtual void pushData(Channel* channel);
     bool multiYearMode() const;
     void setMultiYearMode(bool multiYearMode);
     virtual bool transform() = 0;

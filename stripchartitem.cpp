@@ -3,28 +3,12 @@
 #include <QtMath>
 #include <QPainter>
 
-StripChartItem::StripChartItem(QQuickPaintedItem *parent): QQuickPaintedItem (parent),
-    m_chanIdx(-1),
+StripChartItem::StripChartItem(QQuickPaintedItem *parent):
+    BaseChartItem (parent),
     m_scale(1),
-    m_avgPoint(0),
-    m_multiYearMode(false),
-    m_bgrColor("black"),
-    m_borderColor("#524d4d")
+    m_avgPoint(0)
 {
 
-}
-
-int StripChartItem::chanIdx() const
-{
-    return m_chanIdx;
-}
-
-void StripChartItem::setChanIdx(int chanIdx)
-{    
-    if(m_chanIdx != chanIdx){
-        m_chanIdx = chanIdx;
-        Q_EMIT chanIdxChanged();
-    }
 }
 
 inline int stripPoint(const int y, const int height, const int scale){
@@ -33,7 +17,59 @@ inline int stripPoint(const int y, const int height, const int scale){
     return pt;
 }
 
-bool StripChartItem::transformData2Strip()
+int StripChartItem::cursorWidth() const
+{
+    return m_cursorWidth;
+}
+
+void StripChartItem::setCursorWidth(int cursorWidth)
+{
+    if(m_cursorWidth != cursorWidth){
+        m_cursorWidth = cursorWidth;
+        Q_EMIT cursorWidthChanged();
+    }
+}
+
+int StripChartItem::avgPoint() const
+{
+    return m_avgPoint;
+}
+
+void StripChartItem::setAvgPoint(int avgPoint)
+{
+    if(m_avgPoint != avgPoint){
+        m_avgPoint = avgPoint;
+        Q_EMIT avgPointChanged();
+    }
+}
+
+
+
+int StripChartItem::pixToDpt(const int pix) const
+{
+    return stripPoint(pix, height(), m_scale);
+}
+
+inline int stripY(const int hs, const int tp, const int pt, const int scale)
+{
+    int y = (hs - 1) - (pt - tp)/scale;
+    return y;
+}
+
+int StripChartItem::calCursorWidth(const int currentPix, const int expWidth)
+{
+
+    int center = stripPoint(currentPix, height(), m_scale);
+
+    int expTp = center - expWidth/2;
+
+    int cymin = stripY(height(), 0, expTp+expWidth-1, m_scale);
+    int cymax = stripY(height(), 0, expTp, m_scale);
+    setCursorWidth(abs(cymax - cymin));
+    return m_cursorWidth;
+}
+
+bool StripChartItem::transform()
 {
     if(m_data.empty()) return false;
     int j;
@@ -48,15 +84,15 @@ bool StripChartItem::transformData2Strip()
     LissDataMap::iterator dataIt = m_data.begin();
     for (; dataIt != m_data.end(); dataIt++) {
         Channel* channel = dataIt.value();
+        ChannelParam& cp = channel->getCp();
         const int scaleMax = channel->getRawNpt()/height();
         if(m_scale > scaleMax) m_scale = scaleMax;
         int pt0 = m_scale * height() - 1;
         const int FACTOR = 100;
-        float theta = M_PI * 0/180.0;
-        const int span = 2784;
+        float theta = M_PI * cp.rot/180.0;
         a = -(FACTOR * width() * qSin(theta));
         b = FACTOR * width() * qCos(theta);
-        c = FACTOR * span;
+        c = FACTOR * cp.span;
 
 
         //cal xavg point
@@ -68,7 +104,7 @@ bool StripChartItem::transformData2Strip()
            vxavg = static_cast<short>(data.x());
            vyavg = static_cast<short>(data.y());
         }
-        ChannelParam& cp = channel->getCp();
+
         cp.xavg = vxavg;
         cp.yavg = vyavg;
         pix = 0;
@@ -126,68 +162,6 @@ bool StripChartItem::transformData2Strip()
     return true;
 }
 
-int StripChartItem::cursorWidth() const
-{
-    return m_cursorWidth;
-}
-
-void StripChartItem::setCursorWidth(int cursorWidth)
-{
-    if(m_cursorWidth != cursorWidth){
-        m_cursorWidth = cursorWidth;
-        Q_EMIT cursorWidthChanged();
-    }
-}
-
-int StripChartItem::avgPoint() const
-{
-    return m_avgPoint;
-}
-
-void StripChartItem::setAvgPoint(int avgPoint)
-{
-    if(m_avgPoint != avgPoint){
-        m_avgPoint = avgPoint;
-        Q_EMIT avgPointChanged();
-    }
-}
-
-void StripChartItem::pushData(Channel *chan)
-{
-    if(chan != nullptr){
-        if(!m_multiYearMode) m_data.clear();
-        LissDataMap::iterator dataIt = m_data.find(chan->getDataSetId());
-        if(dataIt == m_data.end()){
-            m_data[chan->getDataSetId()] = chan;
-        }
-        update();
-    }
-}
-
-int StripChartItem::pixToDpt(const int pix) const
-{
-    return stripPoint(pix, height(), m_scale);
-}
-
-inline int stripY(const int hs, const int tp, const int pt, const int scale)
-{
-    int y = (hs - 1) - (pt - tp)/scale;
-    return y;
-}
-
-int StripChartItem::calCursorWidth(const int currentPix, const int expWidth)
-{
-
-    int center = stripPoint(currentPix, height(), m_scale);
-
-    int expTp = center - expWidth/2;
-
-    int cymin = stripY(height(), 0, expTp+expWidth-1, m_scale);
-    int cymax = stripY(height(), 0, expTp, m_scale);
-    setCursorWidth(abs(cymax - cymin));
-    return m_cursorWidth;
-}
-
 int StripChartItem::scale() const
 {
     return m_scale;
@@ -198,19 +172,3 @@ void StripChartItem::setScale(int scale)
     m_scale = scale;
 }
 
-
-void StripChartItem::paint(QPainter *painter)
-{
-    painter->fillRect(0, 0, width(), height(), m_bgrColor);
-    painter->setPen(m_borderColor);
-    painter->drawRect(0, 0, width(), height());
-    if(transformData2Strip() == true){
-        for (LissPointMap::iterator it = m_points.begin(); it != m_points.end(); it++) {
-            painter->setPen(QColor("white"));
-            const QVector<QPointF>& points = it.value();
-            for (int i = 0; i < points.count() - 1; ++i) {
-                painter->drawLine(points[i], points[i+1]);
-            }
-        }
-    }
-}

@@ -27,7 +27,7 @@ Item {
                 }
             }
             onWheeled: {
-                if(angleY < 0){
+                if(wheel.angleDelta.y < 0){
                     changeScale(1)
                 }else{
                     changeScale(-1)

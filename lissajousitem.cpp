@@ -5,7 +5,8 @@
 LissajousItem::LissajousItem(QQuickPaintedItem *parent):
     BaseChartItem (parent),
     m_startPoint(-1),
-    m_endPoint(-1)
+    m_endPoint(-1),
+    m_priChan(nullptr)
 {
 
 }
@@ -13,7 +14,6 @@ LissajousItem::LissajousItem(QQuickPaintedItem *parent):
 bool LissajousItem::transform()
 {
     if(m_data.empty()) return false;
-    if(m_startPoint == -1 || m_endPoint == -1) return false;
     int a,b,c,xcent,ycent;
     int vx,vy,vxavg,vyavg;
     int x1, y1;
@@ -21,6 +21,9 @@ bool LissajousItem::transform()
     LissDataMap::iterator dataIt = m_data.begin();
     for (; dataIt != m_data.end(); dataIt++) {
         Channel* channel = dataIt.value();
+        if(m_startPoint < 0 || m_startPoint >= channel->getData().count()) return false;
+        if(m_endPoint < 0 || m_endPoint >= channel->getData().count()) return false;
+
         ChannelParam& cp = channel->getCp();
         if(cp.xavg == 0){
             AnserGlobal::calAvgXY(channel, cp.xavg, cp.yavg);
@@ -29,13 +32,12 @@ bool LissajousItem::transform()
         vyavg = cp.yavg;
         /* get transformation coefficients */
         const int FACTOR = 100;
-        float theta = M_PI * 0/180.0;
-        const int span = 2784; //temporarily hard code
+        float theta = M_PI * cp.rot/180.0;
         double lissW = width();
         double lissH = height();
         a = static_cast<int>(FACTOR * lissW * qCos(theta));
         b = static_cast<int>(FACTOR * lissH * qSin(theta));
-        c = FACTOR * span;
+        c = FACTOR * cp.span;
 
         if( c==0) c=1;
         xcent = static_cast<int>(lissW/2);
@@ -59,6 +61,25 @@ bool LissajousItem::transform()
         }
     }
     return true;
+}
+
+Channel *LissajousItem::priChan() const
+{
+    return m_priChan;
+}
+
+void LissajousItem::setPriChan(Channel *priChan)
+{
+    if(priChan != nullptr && m_priChan != priChan){
+        m_priChan = priChan;
+        pushData(m_priChan);
+        Q_EMIT priChanChanged();
+    }
+}
+
+int LissajousItem::boundSpan(int span)
+{
+    return AnserGlobal::boundSpan(span);
 }
 
 int LissajousItem::startPoint() const

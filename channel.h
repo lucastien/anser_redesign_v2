@@ -13,6 +13,7 @@ class Channel : public QObject{
     Q_PROPERTY(QString name READ getName WRITE setName)
     Q_PROPERTY(int rot READ getRot WRITE setRot NOTIFY rotChanged)
     Q_PROPERTY(int span READ getSpan WRITE setSpan NOTIFY spanChanged)
+    Q_PROPERTY(float vcon READ getVcon WRITE setVcon NOTIFY vconChanged)
 public:
     explicit Channel(const QString& name_ = QString(), QObject *parent = nullptr);
     ~Channel();
@@ -29,13 +30,15 @@ public:
     void setSpan(int span);
     int getRawNpt() const;
     void setRawNpt(int rawNpt);
-
+    float getVcon() const;
+    void setVcon(float vcon);
     QString getDataSetId() const;
     void setDataSetId(const QString &dataSetId);
 
 signals:
     void rotChanged();
     void spanChanged();
+    void vconChanged();
 private:
     QString m_Name;
     QString m_dataSetId;

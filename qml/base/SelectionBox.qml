@@ -11,7 +11,7 @@ Rectangle{
     border.color: Global.StripChartBorder
     property alias text: switchBtn.text
     signal clicked(int mouseButton)
-    signal wheeled(int angleY)
+    signal wheeled(var wheel)
 
     Label{
         id: switchBtn
@@ -30,7 +30,7 @@ Rectangle{
                 selectionBox.clicked(mouse.button)
             }
             onWheel: {
-                selectionBox.wheeled(wheel.angleDelta.y)
+                selectionBox.wheeled(wheel)
             }
         }
 
