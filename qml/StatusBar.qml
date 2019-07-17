@@ -48,7 +48,7 @@ Pane {
             id: cursorPixelPosLabel
             objectName: "cursorPixelPosLabel"
             text: {                
-                    return "-1, -1";
+                    return "";
             }
 
             // Specify a fixed size to avoid causing items to the right of us jumping
@@ -87,7 +87,7 @@ Pane {
         Label {
             id: selectionSizeLabel
             objectName: "selectionSizeLabel"
-            text: "0 x 0"
+            text: ""
             visible: true
 
             Layout.minimumWidth: selectionAreaMaxTextMetrics.width
@@ -100,24 +100,24 @@ Pane {
             }
         }
 
-        Rectangle {
-            implicitWidth: 16
-            implicitHeight: 1
-            visible: true
+//        Rectangle {
+//            implicitWidth: 16
+//            implicitHeight: 1
+//            visible: true
 
-            Rectangle {
-                y: -1
-                width: 1
-                height: 3
-            }
+//            Rectangle {
+//                y: -1
+//                width: 1
+//                height: 3
+//            }
 
-            Rectangle {
-                y: -1
-                width: 1
-                height: 3
-                anchors.right: parent.right
-            }
-        }
+//            Rectangle {
+//                y: -1
+//                width: 1
+//                height: 3
+//                anchors.right: parent.right
+//            }
+//        }
 
         Label {
             id: lineLengthLabel
@@ -135,15 +135,28 @@ Pane {
             }
         }
 
-
-
-
         ToolSeparator {
             padding: 0
             visible: true
 
             Layout.fillHeight: true
             Layout.maximumHeight: 24
+        }
+
+        Label {
+            id: dateTimeLabel
+            objectName: "dateTimeLabel"
+            text: "Sat Sep 29 17:49:55 2012"
+            visible: true
+
+            Layout.minimumWidth: lineLengthMaxTextMetrics.width
+            Layout.maximumWidth: lineLengthMaxTextMetrics.width
+
+            TextMetrics {
+                id: dateTimeLabelMetrics
+                font: dateTimeLabel.font
+                text: Screen.desktopAvailableWidth
+            }
         }
     }
 }

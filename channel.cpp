@@ -114,3 +114,13 @@ void Channel::setDataSetId(const QString &dataSetId)
     m_dataSetId = dataSetId;
 }
 
+QString Channel::getFullName() const
+{
+    return m_fullName;
+}
+
+void Channel::setFullName(const QString &fullName)
+{
+    m_fullName = fullName;
+}
+

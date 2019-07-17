@@ -19,7 +19,7 @@
 static void fixHdr( TubeHeader *h);
 
 TubeHandler::TubeHandler(QObject *parent) : QObject(parent),
-    tubeFile(QString()),
+    tubeFile(QString(":/data/005021023102.T")),
     m_scale(1)
 {
 }
@@ -63,7 +63,12 @@ int TubeHandler::formatBuff(char *buff,int nbyte)
         short y = htons(*p++);
 
         if(m_tube->channels.find(ch) == m_tube->channels.end()){
-            ChannelPtr chanObj(new Channel(QString::number(ch), this)); //Temporarily set channel name equals to chanOrder
+            int freq_idx=m_tube->hdr.chan[ch].freq - 1 ;
+            QString fullName;
+            fullName.sprintf("CH %2d %4d Khz",
+                             m_tube->hdr.chanOrder[ch], m_tube->hdr.test[freq_idx].freq);
+            ChannelPtr chanObj(new Channel(QString::number(m_tube->hdr.chanOrder[ch]), this)); //Temporarily set channel name equals to chanOrder
+            chanObj->setFullName(fullName);
             chanObj->add(x, y);
             m_tube->channels[ch] = chanObj;
         }else{
@@ -299,6 +304,11 @@ static void fixHdr( TubeHeader *h)
     h->nchan =      qFromBigEndian<int>(h->nchan);
     h->nbyte =      qFromBigEndian<int>(h->nbyte);
 
+    for(i=0; i< _countof(h->test); i++)
+    {
+        h->test[i].freq  =  htonl(h->test[i].freq);
+        h->test[i].coil =  htonl(h->test[i].coil);
+    }
 
     h->read_check =  qFromBigEndian<int>(h->read_check);
     h->end =  qFromBigEndian<int>(h->end);

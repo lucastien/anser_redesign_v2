@@ -149,7 +149,13 @@ Item {
 
     Connections{
         target: switchChan
-        onCurrentChanChanged: updateLissAndExp()
+        onCurrentChanChanged:{
+            var chanObj = tube.getChannel(switchChan.currentChan)
+            if(chanObj){
+                switchChan.text = chanObj.fullName
+            }
+            updateLissAndExp();
+        }
     }
 
     Connections{

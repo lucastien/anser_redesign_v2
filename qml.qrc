@@ -27,5 +27,7 @@
         <file>qml/base/AnserTableView.qml</file>
         <file>qml/base/TableTextContent.qml</file>
         <file>qml/js/CreateServerKeyButtonsComponent.js</file>
+		<file>data/003021999999.T</file>
+		<file>data/005021023102.T</file>
     </qresource>
 </RCC>
