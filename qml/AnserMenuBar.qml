@@ -13,6 +13,22 @@ MenuBar{
 
     Menu{
         title: qsTr("SETUP")
+        MenuItem{
+            text: qsTr("LOAD STD")
+            onTriggered: {
+                console.log("Start loading std tube")
+                anserMain.tubeHanlder.tubeFile = ":/data/003021999999.T"
+                anserMain.tubeHanlder.loadTube()
+            }
+        }
+        MenuItem{
+            text: qsTr("LOAD TUBE")
+            onTriggered: {
+                console.log("Start loading std tube")
+                anserMain.tubeHanlder.tubeFile = ":/data/005021023102.T"
+                anserMain.tubeHanlder.loadTube()
+            }
+        }
     }
 
     Menu{
