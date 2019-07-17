@@ -3,47 +3,14 @@
 #include <QPainter>
 #include <QtMath>
 LissajousItem::LissajousItem(QQuickPaintedItem *parent):
-    QQuickPaintedItem (parent),
+    BaseChartItem (parent),
     m_startPoint(-1),
-    m_endPoint(-1),
-    m_multiYearMode(false),
-    m_bgrColor("black"),
-    m_borderColor("#524d4d")
+    m_endPoint(-1)
 {
 
 }
 
-int LissajousItem::chanIdx() const
-{
-    return m_chanIdx;
-}
-
-void LissajousItem::setChanIdx(int chanIdx)
-{
-    if(m_chanIdx != chanIdx){
-        m_chanIdx = chanIdx;
-        Q_EMIT chanIdxChanged();
-    }    
-}
-
-
-void LissajousItem::paint(QPainter *painter)
-{
-    painter->fillRect(0, 0, width(), height(), m_bgrColor);
-    painter->setPen(m_borderColor);
-    painter->drawRect(0, 0, width(), height());
-    if(transformData2Liss() == true){
-        for (LissPointMap::iterator it = m_points.begin(); it != m_points.end(); it++) {
-            painter->setPen(QColor("white"));
-            const QVector<QPointF>& points = it.value();
-            for (int i = 0; i < points.count() - 1; ++i) {
-                painter->drawLine(points[i], points[i+1]);
-            }
-        }
-    }
-}
-
-bool LissajousItem::transformData2Liss()
+bool LissajousItem::transform()
 {
     if(m_data.empty()) return false;
     if(m_startPoint == -1 || m_endPoint == -1) return false;
@@ -94,56 +61,20 @@ bool LissajousItem::transformData2Liss()
     return true;
 }
 
-QColor LissajousItem::getBorderColor() const
+int LissajousItem::startPoint() const
 {
-    return m_borderColor;
+    return m_startPoint;
 }
 
-void LissajousItem::setBorderColor(const QColor &borderColor)
+void LissajousItem::setStartPoint(int startPoint)
 {
-    if(m_borderColor != borderColor){
-        m_borderColor = borderColor;
-        Q_EMIT borderColorChanged();
-    }
-
-}
-
-QColor LissajousItem::getBgrColor() const
-{
-    return m_bgrColor;
-}
-
-void LissajousItem::setBgrColor(const QColor &bgrColor)
-{
-    if(m_bgrColor != bgrColor){
-        m_bgrColor = bgrColor;
-        Q_EMIT bgrColorChanged();
-    }
-
-}
-
-bool LissajousItem::multiYearMode() const
-{
-    return m_multiYearMode;
-}
-
-void LissajousItem::setMultiYearMode(bool multiYearMode)
-{
-    m_multiYearMode = multiYearMode;
-}
-
-void LissajousItem::pushData(Channel* channel)
-{
-    if(channel != nullptr){
-        if(!m_multiYearMode) m_data.clear();
-        LissDataMap::iterator dataIt = m_data.find(channel->getDataSetId());
-        if(dataIt == m_data.end()){
-            m_data[channel->getDataSetId()] = channel;
-        }
+    if(m_startPoint != startPoint){
+        m_startPoint = startPoint;
         update();
+        Q_EMIT startPointChanged();
     }
-
 }
+
 
 int LissajousItem::endPoint() const
 {
@@ -158,18 +89,4 @@ void LissajousItem::setEndPoint(int endPoint)
         Q_EMIT endPointChanged();
     }
 
-}
-
-int LissajousItem::startPoint() const
-{
-    return m_startPoint;
-}
-
-void LissajousItem::setStartPoint(int startPoint)
-{
-    if(m_startPoint != startPoint){
-        m_startPoint = startPoint;
-        update();
-        Q_EMIT startPointChanged();
-    }
 }

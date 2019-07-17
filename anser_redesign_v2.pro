@@ -14,6 +14,7 @@ DEFINES += WINDOWS_IGNORE_PACKING_MISMATCH
 
 SOURCES += \
         anserglobal.cpp \
+        basechartitem.cpp \
         channel.cpp \
         channelhandler.cpp \
         disktablemodel.cpp \
@@ -57,6 +58,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     anserglobal.h \
+    basechartitem.h \
     channel.h \
     channelhandler.h \
     channelparam.h \
