@@ -304,7 +304,7 @@ static void fixHdr( TubeHeader *h)
     h->nchan =      qFromBigEndian<int>(h->nchan);
     h->nbyte =      qFromBigEndian<int>(h->nbyte);
 
-    for(i=0; i< _countof(h->test); i++)
+    for(i=0; i< MIZ70_MAX_FREQS; i++)
     {
         h->test[i].freq  =  htonl(h->test[i].freq);
         h->test[i].coil =  htonl(h->test[i].coil);

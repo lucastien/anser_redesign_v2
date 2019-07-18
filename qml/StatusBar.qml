@@ -36,8 +36,8 @@ Pane {
 
         Label {
             id: pointerIconLabel
-            text: "\uf245"
-            font.family: "FontAwesome"
+            text: "ABC"
+            //font.family: "FontAwesome"
             font.pixelSize: Qt.application.font.pixelSize * 1.2
             horizontalAlignment: Label.AlignHCenter
 
@@ -47,8 +47,8 @@ Pane {
         Label {
             id: cursorPixelPosLabel
             objectName: "cursorPixelPosLabel"
-            text: {                
-                    return "";
+            text: {
+                return "";
             }
 
             // Specify a fixed size to avoid causing items to the right of us jumping
@@ -65,59 +65,93 @@ Pane {
 
         ToolSeparator {
             padding: 0
-            // Use opacity rather than visible, as it's an easy way of ensuring that the RowLayout
-            // always has a minimum height equal to the tallest item (assuming that that's us)
-            // and hence doesn't jump around when we become hidden.
-            // There's always at least one label and icon visible at all times (cursor pos),
-            // so we don't have to worry about those.
-//            opacity: (fpsCounter.visible || lineLengthLabel.visible || selectionSizeLabel.visible) ? 1 : 0
+            Layout.fillHeight: true
+            Layout.maximumHeight: 24
+        }
+
+        Rectangle{
+            Layout.fillHeight: true
+            color: "red"
+            width: 500
+            Label {
+                id: selectionSizeLabel
+                anchors.fill: parent
+                objectName: "selectionSizeLabel"
+                text: "Error message will be displayed here"
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                visible: true
+
+                Layout.minimumWidth: selectionAreaMaxTextMetrics.width
+                Layout.maximumWidth: selectionAreaMaxTextMetrics.width
+
+                TextMetrics {
+                    id: selectionAreaMaxTextMetrics
+                    font: selectionSizeLabel.font
+                    text: "9999 x 9999"
+                }
+            }
+        }
+
+        ToolSeparator {
+            padding: 0
+            visible: true
 
             Layout.fillHeight: true
             Layout.maximumHeight: 24
         }
 
-//        Image {
-//            id: selectionIcon
-//            source: "qrc:/images/selection.png"
-//            visible: canvas && canvas.tool === ImageCanvas.SelectionTool
-
-//            Layout.rightMargin: 6
-//        }
-
         Label {
-            id: selectionSizeLabel
-            objectName: "selectionSizeLabel"
-            text: ""
+            id: speedLbl
+            objectName: "speedLbl"
+            text: "Speed: ???"
             visible: true
 
-            Layout.minimumWidth: selectionAreaMaxTextMetrics.width
-            Layout.maximumWidth: selectionAreaMaxTextMetrics.width
+            Layout.minimumWidth: speedLblMetrics.width
+            Layout.maximumWidth: speedLblMetrics.width
 
             TextMetrics {
-                id: selectionAreaMaxTextMetrics
-                font: selectionSizeLabel.font
-                text: "9999 x 9999"
+                id: speedLblMetrics
+                font: speedLbl.font
+                text: Screen.desktopAvailableWidth
+            }
+
+            ToolTip {
+                id: control
+                delay: 0
+                //timeout: 5000
+                visible: mouseArea.containsMouse
+                contentItem: Text {
+                    textFormat: Text.RichText
+                    text: "<div><table border='1'><caption><h4>Test stats</h4>"+
+                    "</caption><tr bgcolor='#9acd32'><th/><th>Number1</th><th>Number2</th></tr> <tr><th>Line1</th>"+
+                       "<td> 0 </td> <td> 1 </td> </tr> <tr><th>Line2</th> <td> 0 </td> <td> 1 </td> </tr>"+
+                       "<tr><th>Line3</th> <td> 0 </td> <td> 0 </td> </tr> <tr><th>Line4</th> <td> 1 </td> <td> 0 </td> </tr>"+
+                       "<tr><th>Line5</th> <td> 1 </td> <td> 1 </td> </tr> <tr><th>Line6</th> <td> 1 </td> <td> 1 </td> </tr> </div>"
+                    font.pointSize: 14
+                    color: "#fd3a94"
+                }
+
+                background: Rectangle {
+                    color: "#fff68f"
+                    border.color: "#21be2b"
+                }
+            }
+
+            MouseArea{
+                id: mouseArea
+                anchors.fill: parent
+                hoverEnabled: true
             }
         }
 
-//        Rectangle {
-//            implicitWidth: 16
-//            implicitHeight: 1
-//            visible: true
+        ToolSeparator {
+            padding: 0
+            visible: true
 
-//            Rectangle {
-//                y: -1
-//                width: 1
-//                height: 3
-//            }
-
-//            Rectangle {
-//                y: -1
-//                width: 1
-//                height: 3
-//                anchors.right: parent.right
-//            }
-//        }
+            Layout.fillHeight: true
+            Layout.maximumHeight: 24
+        }
 
         Label {
             id: lineLengthLabel
@@ -160,3 +194,18 @@ Pane {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/
