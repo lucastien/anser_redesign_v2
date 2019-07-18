@@ -11,7 +11,7 @@ Pane {
     padding: 6
 
     property int dpt: -1
-
+    signal expStripSliderChanged(int value)
     Rectangle {
         parent: statusBarPane.background
         width: parent.width
@@ -36,12 +36,32 @@ Pane {
 
         Label {
             id: pointerIconLabel
-            text: "ABC"
+            text: slider.value
             //font.family: "FontAwesome"
             font.pixelSize: Qt.application.font.pixelSize * 1.2
             horizontalAlignment: Label.AlignHCenter
 
             Layout.preferredWidth: Math.max(26, implicitWidth)
+        }
+
+        Slider{
+            id: slider
+            from: -50
+            value: 0
+            to: 50
+            stepSize: 1
+            onValueChanged: expStripSliderChanged(value)
+            MouseArea{
+                anchors.fill: parent
+                hoverEnabled: true
+                onWheel: {
+                    if(wheel.angleDelta.y < 0){
+                        slider.increase();
+                    }else{
+                        slider.decrease();
+                    }
+                }
+            }
         }
 
         Label {
@@ -88,7 +108,7 @@ Pane {
                 TextMetrics {
                     id: selectionAreaMaxTextMetrics
                     font: selectionSizeLabel.font
-                    text: "9999 x 9999"
+                    text: selectionSizeLabel.text
                 }
             }
         }
