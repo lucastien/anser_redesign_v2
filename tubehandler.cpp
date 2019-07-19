@@ -170,6 +170,11 @@ bool TubeHandler::loadTube()
     return true;
 }
 
+bool TubeHandler::loadHistTube()
+{
+
+}
+
 
 
 static void sizeNpt(TubeData*tube)

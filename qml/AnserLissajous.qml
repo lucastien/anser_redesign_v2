@@ -116,7 +116,8 @@ Item {
 
         LissajousItem{
             id: lissajous
-            fillColor: "black"
+            fillColor: Global.LissajousColor
+            penColor: Global.PenColor
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop

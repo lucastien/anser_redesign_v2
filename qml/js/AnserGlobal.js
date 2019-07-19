@@ -5,3 +5,4 @@ const LissajousColor = "black"
 const LissajousBorder = "#524d4d"
 const MeasBoxHeight = 25
 const BoxHoverColor = "red"
+const PenColor = "green"

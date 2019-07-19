@@ -44,6 +44,7 @@ Item {
             Layout.fillHeight: true
             avgPoint: 0
             fillColor: Global.StripChartColor
+            penColor: Global.PenColor
             onCursorWidthChanged: {
                 stripChart.cursorWidth = stripArea.cursorWidth
             }

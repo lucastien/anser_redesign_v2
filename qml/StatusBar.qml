@@ -34,54 +34,54 @@ Pane {
         visible: true
         anchors.verticalCenter: parent.verticalCenter
 
-        Label {
-            id: pointerIconLabel
-            text: slider.value
-            //font.family: "FontAwesome"
-            font.pixelSize: Qt.application.font.pixelSize * 1.2
-            horizontalAlignment: Label.AlignHCenter
+//        Label {
+//            id: pointerIconLabel
+//            text: slider.value
+//            //font.family: "FontAwesome"
+//            font.pixelSize: Qt.application.font.pixelSize * 1.2
+//            horizontalAlignment: Label.AlignHCenter
 
-            Layout.preferredWidth: Math.max(26, implicitWidth)
-        }
+//            Layout.preferredWidth: Math.max(26, implicitWidth)
+//        }
 
-        Slider{
-            id: slider
-            from: -50
-            value: 0
-            to: 50
-            stepSize: 1
-            onValueChanged: expStripSliderChanged(value)
-            MouseArea{
-                anchors.fill: parent
-                hoverEnabled: true
-                onWheel: {
-                    if(wheel.angleDelta.y < 0){
-                        slider.increase();
-                    }else{
-                        slider.decrease();
-                    }
-                }
-            }
-        }
+//        Slider{
+//            id: slider
+//            from: -50
+//            value: 0
+//            to: 50
+//            stepSize: 1
+//            onValueChanged: expStripSliderChanged(value)
+//            MouseArea{
+//                anchors.fill: parent
+//                hoverEnabled: true
+//                onWheel: {
+//                    if(wheel.angleDelta.y < 0){
+//                        slider.increase();
+//                    }else{
+//                        slider.decrease();
+//                    }
+//                }
+//            }
+//        }
 
-        Label {
-            id: cursorPixelPosLabel
-            objectName: "cursorPixelPosLabel"
-            text: {
-                return "";
-            }
+//        Label {
+//            id: cursorPixelPosLabel
+//            objectName: "cursorPixelPosLabel"
+//            text: {
+//                return "";
+//            }
 
-            // Specify a fixed size to avoid causing items to the right of us jumping
-            // around when we would be resized due to changes in our text.
-            Layout.minimumWidth: cursorMaxTextMetrics.width
-            Layout.maximumWidth: cursorMaxTextMetrics.width
+//            // Specify a fixed size to avoid causing items to the right of us jumping
+//            // around when we would be resized due to changes in our text.
+//            Layout.minimumWidth: cursorMaxTextMetrics.width
+//            Layout.maximumWidth: cursorMaxTextMetrics.width
 
-            TextMetrics {
-                id: cursorMaxTextMetrics
-                font: cursorPixelPosLabel.font
-                text: "9999, 9999"
-            }
-        }
+//            TextMetrics {
+//                id: cursorMaxTextMetrics
+//                font: cursorPixelPosLabel.font
+//                text: "9999, 9999"
+//            }
+//        }
 
         ToolSeparator {
             padding: 0

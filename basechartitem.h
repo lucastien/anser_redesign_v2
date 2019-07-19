@@ -9,6 +9,7 @@ class BaseChartItem: public QQuickPaintedItem
 {
     Q_OBJECT
     Q_PROPERTY(QColor borderColor READ borderColor WRITE setBorderColor NOTIFY borderColorChanged)
+    Q_PROPERTY(QColor penColor READ penColor WRITE setPenColor NOTIFY penColorChanged)
 
 public:
     explicit BaseChartItem(QQuickPaintedItem *parent = nullptr);
@@ -21,8 +22,12 @@ public:
     bool multiYearMode() const;
     void setMultiYearMode(bool multiYearMode);
     virtual bool transform() = 0;
+    QColor penColor() const;
+    void setPenColor(const QColor &penColor);
+
 signals:
     void borderColorChanged();
+    void penColorChanged();
 protected:
     typedef QMap<QString, QVector<QPointF>> LissPointMap;
     typedef QMap<QString, Channel*> LissDataMap;
@@ -31,6 +36,7 @@ protected:
     LissDataMap m_data; //support draw multiple data set with key = year
     LissPointMap m_points;
     QColor m_borderColor;
+    QColor m_penColor;
 };
 
 #endif // BASECHARTITEM_H

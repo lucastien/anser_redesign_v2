@@ -27,6 +27,7 @@ public:
     QList<QObject *> getChannels() const;
 public slots:
     bool loadTube();
+    bool loadHistTube();
 
 signals:
     void tubeLoaded();

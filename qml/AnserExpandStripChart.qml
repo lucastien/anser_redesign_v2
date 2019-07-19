@@ -61,6 +61,7 @@ Item {
         id: xyComp
         anchors.fill: parent
 
+        //Left expand strip chart
         ExpStripChartItem{
             id: xComp
             xComponent: true
@@ -68,8 +69,10 @@ Item {
             width: xyComp.width/2
             anchors.left: xyComp.left
             fillColor: Global.LissajousColor
+            penColor: Global.PenColor
         }
 
+        //Right expand strip chart
         ExpStripChartItem{
             id: yComp
             xComponent: false
@@ -77,8 +80,10 @@ Item {
             width: xyComp.width/2
             anchors.left: xComp.right
             fillColor: Global.LissajousColor
+            penColor: Global.PenColor
         }
 
+        //Draw expand window (three red line on the expand strip charts)
         Canvas{
             id: winExpCanvas
             anchors.fill: parent

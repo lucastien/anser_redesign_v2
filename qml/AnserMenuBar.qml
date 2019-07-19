@@ -29,6 +29,12 @@ MenuBar{
                 anserMain.tubeHanlder.loadTube()
             }
         }
+        MenuItem{
+            text: qsTr("MULTI YEARS DEMO")
+            onTriggered: {
+
+            }
+        }
     }
 
     Menu{

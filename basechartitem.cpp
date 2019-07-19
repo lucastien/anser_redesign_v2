@@ -4,7 +4,8 @@
 BaseChartItem::BaseChartItem(QQuickPaintedItem *parent):
     QQuickPaintedItem (parent),
     m_multiYearMode(false),
-    m_borderColor("#524d4d")
+    m_borderColor("#524d4d"),
+    m_penColor("white")
 {
 
 }
@@ -36,7 +37,7 @@ void BaseChartItem::paint(QPainter *painter)
     painter->drawRect(0, 0, w, h);
     if(transform() == true){
         for (LissPointMap::iterator it = m_points.begin(); it != m_points.end(); it++) {
-            painter->setPen(QColor("white"));
+            painter->setPen(m_penColor);
             const QVector<QPointF>& points = it.value();
             for (int i = 0; i < points.count() - 1; ++i) {
                 painter->drawLine(points[i], points[i+1]);
@@ -65,4 +66,17 @@ bool BaseChartItem::multiYearMode() const
 void BaseChartItem::setMultiYearMode(bool multiYearMode)
 {
     m_multiYearMode = multiYearMode;
+}
+
+QColor BaseChartItem::penColor() const
+{
+    return m_penColor;
+}
+
+void BaseChartItem::setPenColor(const QColor &penColor)
+{
+    if(m_penColor != penColor){
+        m_penColor = penColor;
+        Q_EMIT penColorChanged();
+    }
 }
