@@ -28,6 +28,7 @@ SOURCES += \
         stripchartitem.cpp \
         tlistcontroller.cpp \
         tubehandler.cpp \
+        tubeinfo.cpp \
         tubeloader.cpp
 
 RESOURCES += qml.qrc \
@@ -78,6 +79,7 @@ HEADERS += \
     stripchartitem.h \
     tlistcontroller.h \
     tubehandler.h \
+    tubeinfo.h \
     tubeloader.h \
     winsock2.h
 

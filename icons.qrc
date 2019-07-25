@@ -21,5 +21,8 @@
         <file>images/icons/ic_menu_36px.svg</file>
         <file>images/icons/ic_menu_48px.svg</file>
         <file>images/icons/layout.png</file>
+        <file>images/icons/cancel.png</file>
+        <file>images/icons/info.png</file>
+        <file>images/icons/warning.png</file>
     </qresource>
 </RCC>

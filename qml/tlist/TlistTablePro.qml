@@ -88,7 +88,7 @@ ColumnLayout{
         }
         onCurrentIndexChanged:{
             tubeFileName = reelModel.get(currentIndex)
-            console.log("Tube file name" + tubeFileName)
+            //console.log("Tube file name" + tubeFileName)
         }
 
     }
