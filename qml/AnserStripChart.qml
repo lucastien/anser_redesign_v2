@@ -24,16 +24,56 @@ Item {
         return stripArea.pixToDpt(center)
     }
 
+    function drawStrip(){
+        console.log("Call drawing stripchart on channel " + currentChan)
+        if(tube){
+            var mode = chanScoller.mode;
+            stripArea.clear();
+            chanScoller.channel = tube.getChannel(currentChan);
+            switch(mode){
+            case StripChanItem.ModeType.Current:
+                stripArea.pushData(tube.getChannel(currentChan), "green");
+                break;
+            case StripChanItem.ModeType.History:
+                stripArea.pushData(tube.getHistChannel(currentChan), "red");
+                break;
+            case StripChanItem.ModeType.Base:
+                stripArea.pushData(tube.getBaseChannel(currentChan), "blue");
+                break;
+            case StripChanItem.ModeType.CH:
+                stripArea.pushData(tube.getChannel(currentChan), "green");
+                stripArea.pushData(tube.getHistChannel(currentChan), "red");
+                break;
+            case StripChanItem.ModeType.CB:
+                stripArea.pushData(tube.getChannel(currentChan), "green");
+                stripArea.pushData(tube.getBaseChannel(currentChan), "blue");
+                break;
+            case StripChanItem.ModeType.HB:
+                stripArea.pushData(tube.getHistChannel(currentChan), "red");
+                stripArea.pushData(tube.getBaseChannel(currentChan), "blue");
+                break;
+            case StripChanItem.ModeType.Combine:
+                stripArea.pushData(tube.getChannel(currentChan), "green");
+                stripArea.pushData(tube.getHistChannel(currentChan), "red");
+                stripArea.pushData(tube.getBaseChannel(currentChan), "blue");
+                break;
+            }
+        }
+    }
+
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
-        ChannelScroller{
+
+        StripChanItem{
             id: chanScoller
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
-            currentChan: 3
-            onCurrentChanChanged: {                
+            height: 50
+            onCurrentChanChanged: {
                 drawStrip()
+            }
+            onModeChanged: {
+                drawStrip();
             }
         }
 
@@ -53,11 +93,24 @@ Item {
                 width: stripArea.width
                 height: Global.ChannelBoxHeight
                 color: "#e60707"
-                opacity: 0.8
+                opacity: 0.5
                 x: 0
                 y: stripArea.height/2
                 onYChanged: stripChart.cursorY = y
                 //onHeightChanged: stripChart.cursorWidth = height;
+                Canvas{
+                    id: cursorCanvas
+                    anchors.fill: parent
+                    onPaint: {
+                        var ctx = getContext("2d");
+                        ctx.lineWidth = 0.5;
+                        ctx.strokeStyle = "white";
+                        ctx.beginPath();
+                        ctx.moveTo(0, parent.height/2);
+                        ctx.lineTo(parent.width, parent.height/2);
+                        ctx.stroke();
+                    }
+                }
 
             }
 
@@ -101,16 +154,6 @@ Item {
             drawStrip();
         }
     }
-
-
-    function drawStrip(){
-        console.log("Call drawing stripchart on channel " + currentChan)
-        if(tube){
-            stripArea.pushData(tube.getChannel(currentChan));
-        }
-    }
-
-
 }
 
 

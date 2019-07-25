@@ -18,6 +18,8 @@ bool LissajousItem::transform()
     int vx,vy,vxavg,vyavg;
     int x1, y1;
     m_points.clear();
+    const int spacing = 20;
+    int dataIdx = 0;
     LissDataMap::iterator dataIt = m_data.begin();
     for (; dataIt != m_data.end(); dataIt++) {
         Channel* channel = dataIt.value();
@@ -40,9 +42,9 @@ bool LissajousItem::transform()
         c = FACTOR * cp.span;
 
         if( c==0) c=1;
-        xcent = static_cast<int>(lissW/2);
-        ycent = static_cast<int>(lissH/2);
-
+        xcent = static_cast<int>(lissW/2) + dataIdx*spacing;
+        ycent = static_cast<int>(lissH/2) + dataIdx*spacing;
+        dataIdx++;
         /* find points (NOTE: positive y axis points downward) */
         int pt0 = m_startPoint;
 
@@ -65,7 +67,8 @@ bool LissajousItem::transform()
 
 Channel *LissajousItem::priChan() const
 {
-    return m_priChan;
+    if(m_data.empty()) return nullptr;
+    return m_data.begin().value();
 }
 
 void LissajousItem::setPriChan(Channel *priChan)

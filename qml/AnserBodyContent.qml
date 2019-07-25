@@ -1,8 +1,10 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import TubeHandler 1.0
 import App 1.0
+import "tlist"
+import "base"
 Item {
     id: stripContentItem
     property TubeHandler tube
@@ -42,13 +44,44 @@ Item {
         updateLissajous()
     }
 
+
+    Connections{
+        target: toolbar
+        onTlistClicked:{
+            if(tlistPro.visible)
+                tlistPro.visible = false;
+            else
+                tlistPro.visible = true;
+        }
+    }
+
+    Connections{
+        target: anserFooterBar
+        onTlistClicked:{
+            if(tlistPro.visible)
+                tlistPro.visible = false;
+            else
+                tlistPro.visible = true;
+        }
+    }
+
+
     RowLayout{
         spacing: 0
         anchors.fill: parent
 
+
+        AnserTlistItem{
+            id: tlistPro
+            width: 180
+            Layout.fillHeight: true
+            tube: stripContentItem.tube
+            visible: false
+        }
+
         AnserLocBar{
             id: locBar
-            width: 50
+            width: 70
             Layout.fillHeight: true
             tube: stripContentItem.tube
         }
@@ -99,12 +132,22 @@ Item {
                              stripRepeater.itemAt(i).drawStrip();
                          }
                     }
+                    for(i = 0; i < lissRepeater.count; i++){
+                        if(i !== index && lissRepeater.itemAt(i).channel === channel){
+                            lissRepeater.itemAt(i).updateLissAndExp();
+                        }
+                    }
                 }
                 onRotChanged: {
                    for(var i = 0; i < stripRepeater.count; i++){
                         if(stripRepeater.itemAt(i).currentChan === channel){
                             stripRepeater.itemAt(i).drawStrip();
                         }
+                   }
+                   for(i = 0; i < lissRepeater.count; i++){
+                       if(i !== index && lissRepeater.itemAt(i).channel === channel){
+                           lissRepeater.itemAt(i).updateLissAndExp();
+                       }
                    }
                 }
             }

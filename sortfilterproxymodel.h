@@ -18,6 +18,8 @@ class SortFilterProxyModel : public QSortFilterProxyModel, public QQmlParserStat
     Q_PROPERTY(QString sgFilterString READ sgFilterString WRITE setSGFilterString)
     Q_PROPERTY(QString legFilterString READ legFilterString WRITE setLegFilterString)
     Q_PROPERTY(QString alphaFilterString READ alphaFilterString WRITE setAlphaFilterString)
+    Q_PROPERTY(QString reelFilterString READ reelFilterString WRITE setReelFilterString)
+    Q_PROPERTY(QString unitFilterString READ unitFilterString WRITE setUnitFilterString)
 
 public:
 
@@ -37,8 +39,14 @@ public:
     QString sgFilterString() const;
     void setSGFilterString(const QString &filter);
 
+    QString unitFilterString() const;
+    void setUnitFilterString(const QString &filter);
+
     QString legFilterString() const;
     void setLegFilterString(const QString &filter);
+
+    QString reelFilterString() const;
+    void setReelFilterString(const QString &filter);
 
     QString alphaFilterString() const;
     void setAlphaFilterString(const QString &filter);
@@ -59,6 +67,8 @@ private:
     QRegExp sgRegExp;
     QRegExp legRegExp;
     QRegExp alphaRegExp;
+    QRegExp reelRegExp;
+    QRegExp unitRegExp;
 };
 
 #endif // SORTFILTERPROXYMODEL_H

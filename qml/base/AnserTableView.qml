@@ -44,15 +44,11 @@ ListView{
         return listView.headerItem.itemAt(index).width
     }
 
-    highlight: highlightBar
+    highlight: Rectangle {
+        width: listView.width; height: 20
+        color: "red"
+        y: listView.currentItem.y
+    }
     highlightFollowsCurrentItem: false
 
-    Component {
-        id: highlightBar
-        Rectangle {
-            width: listView.width; height: 20
-            color: "red"
-            y: listView.currentItem.y
-        }
-    }
 }

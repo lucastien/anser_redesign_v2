@@ -28,6 +28,8 @@ bool ExpStripChartItem::transform()
         return false;
 
     m_points.clear();
+    const int spacing = 20;
+    int dataIdx = 0;
     LissDataMap::iterator dataIt = m_data.begin();
     for (; dataIt != m_data.end(); dataIt++) {
         Channel* channel = dataIt.value();
@@ -46,7 +48,8 @@ bool ExpStripChartItem::transform()
         b = FACTOR * width() * qSin(theta);
         c = FACTOR * cp.span;
 
-        cent = width()/2;
+        cent = width()/2 + dataIdx*spacing;
+        dataIdx++;
         if (c==0) c=1;
 
         /* setup y coordinates */

@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/">
+        <file>materialdesignicons-webfont.ttf</file>
+        <file>Icon.js</file>
+        <file>images/icons/ic_keyboard_arrow_down_24px.svg</file>
+        <file>images/icons/ic_keyboard_arrow_left_24px.svg</file>
+        <file>images/icons/ic_keyboard_arrow_right_24px.svg</file>
+        <file>images/icons/ic_keyboard_arrow_up_24px.svg</file>
+        <file>images/icons/ic_add_circle_outline_24px.svg</file>
+        <file>images/icons/ic_add_circle_outline_48px.svg</file>
+        <file>images/icons/ic_apps_18px.svg</file>
+        <file>images/icons/ic_apps_24px.svg</file>
+        <file>images/icons/ic_apps_36px.svg</file>
+        <file>images/icons/ic_apps_48px.svg</file>
+        <file>images/icons/report.png</file>
+        <file>images/icons/summary.png</file>
+        <file>images/icons/message.png</file>
+        <file>images/icons/computer-screen.png</file>
+        <file>images/icons/ic_menu_18px.svg</file>
+        <file>images/icons/ic_menu_24px.svg</file>
+        <file>images/icons/ic_menu_36px.svg</file>
+        <file>images/icons/ic_menu_48px.svg</file>
+    </qresource>
+</RCC>

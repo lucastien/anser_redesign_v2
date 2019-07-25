@@ -4,6 +4,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
+#include <QFontDatabase>
 #include <QtWidgets/QApplication>
 
 #include "disktablemodel.h"
@@ -20,6 +21,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+    QFontDatabase::addApplicationFont(":/materialdesignicons-webfont.ttf");
 
     app.setOrganizationName("Westinghouse");
     app.setApplicationName("Tlist");

@@ -7,5 +7,6 @@ StatusBar {
     id: foot
     parent: ApplicationWindow.window.contentItem
     width: anserMain.width
-    anchors.bottom: anserMain.bottom
+    anchors.bottom: anserMain.bottom    
+
 }

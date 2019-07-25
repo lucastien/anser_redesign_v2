@@ -3,7 +3,6 @@
 
 BaseChartItem::BaseChartItem(QQuickPaintedItem *parent):
     QQuickPaintedItem (parent),
-    m_multiYearMode(false),
     m_borderColor("#524d4d"),
     m_penColor("white")
 {
@@ -36,8 +35,9 @@ void BaseChartItem::paint(QPainter *painter)
     int h = static_cast<int>(height());
     painter->drawRect(0, 0, w, h);
     if(transform() == true){
+        int i = 0;
         for (LissPointMap::iterator it = m_points.begin(); it != m_points.end(); it++) {
-            painter->setPen(m_penColor);
+            painter->setPen(m_colors[it.key()]);
             const QVector<QPointF>& points = it.value();
             for (int i = 0; i < points.count() - 1; ++i) {
                 painter->drawLine(points[i], points[i+1]);
@@ -46,26 +46,16 @@ void BaseChartItem::paint(QPainter *painter)
     }
 }
 
-void BaseChartItem::pushData(Channel *channel)
+void BaseChartItem::pushData(Channel *channel, const QColor& color)
 {
     if(channel != nullptr){
-        if(!m_multiYearMode) m_data.clear();
         LissDataMap::iterator dataIt = m_data.find(channel->getDataSetId());
         if(dataIt == m_data.end()){
             m_data[channel->getDataSetId()] = channel;
+            m_colors[channel->getDataSetId()] = color;
         }
         update();
     }
-}
-
-bool BaseChartItem::multiYearMode() const
-{
-    return m_multiYearMode;
-}
-
-void BaseChartItem::setMultiYearMode(bool multiYearMode)
-{
-    m_multiYearMode = multiYearMode;
 }
 
 QColor BaseChartItem::penColor() const
@@ -80,3 +70,17 @@ void BaseChartItem::setPenColor(const QColor &penColor)
         Q_EMIT penColorChanged();
     }
 }
+
+Channel *BaseChartItem::at(const int idx)
+{
+    if(idx < 0 || idx >= m_data.count()) return nullptr;
+    return (m_data.begin() + idx).value();
+}
+
+void BaseChartItem::clear()
+{
+    m_data.clear();
+    m_colors.clear();
+    m_points.clear();
+}
+

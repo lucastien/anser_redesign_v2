@@ -14,10 +14,11 @@ Rectangle{
         spacing: 1
         Repeater{
             model: tableTextContent.content
-            Label{
+            Text{
                 Layout.alignment: Qt.AlignVCenter|Qt.AlignHCenter
                 width: columnWidthArr === null || index >=  columnWidthArr.length ? 50: columnWidthArr[index]
                 text: modelData
+                color: "white"
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
 

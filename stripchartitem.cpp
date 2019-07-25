@@ -81,7 +81,9 @@ bool StripChartItem::transform()
     vxavg = vyavg = 0;
 
     m_points.clear();
+    const int spacing = 20;
     LissDataMap::iterator dataIt = m_data.begin();
+    int dataIdx = 0;
     for (; dataIt != m_data.end(); dataIt++) {
         Channel* channel = dataIt.value();
         ChannelParam& cp = channel->getCp();
@@ -108,7 +110,8 @@ bool StripChartItem::transform()
         cp.xavg = vxavg;
         cp.yavg = vyavg;
         pix = 0;
-        cent = width()/2;
+        cent = width()/2 + dataIdx*spacing;
+        dataIdx++;
         int npt = channel->getData().count();
         if(pt0 >= 0 && pt0 < npt)
             {

@@ -27,7 +27,17 @@
         <file>qml/base/AnserTableView.qml</file>
         <file>qml/base/TableTextContent.qml</file>
         <file>qml/js/CreateServerKeyButtonsComponent.js</file>
-		<file>data/003021999999.T</file>
-		<file>data/005021023102.T</file>
+        <file>data/003021999999.T</file>
+        <file>data/005021023102.T</file>
+        <file>qml/tlist/TlistTablePro.qml</file>
+        <file>qml/tlist/TlistPro.qml</file>
+        <file>qml/StripChanItem.qml</file>
+        <file>qml/LissChanItem.qml</file>
+        <file>qml/LissMeasItem.qml</file>
+        <file>qml/base/IconButton.qml</file>
+        <file>data/Locate_R4C122.txt</file>
+        <file>data/Locate_R23C102.xml</file>
+        <file>qml/AnserTlistItem.qml</file>
+        <file>qml/tlist/ReelTabItem.qml</file>
     </qresource>
 </RCC>

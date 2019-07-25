@@ -3,9 +3,10 @@
 #include <QQmlEngine>
 #include "channel.h"
 
-Channel::Channel(const QString& name_, QObject *parent):
-    QObject (parent),
-    m_Name(name_)
+Channel::Channel(const QString& name_):
+    //QObject (parent),
+    m_Name(name_),
+    m_freq(0)
 {
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
     memset(&cp, 0, sizeof (ChannelParam));
@@ -122,5 +123,19 @@ QString Channel::getFullName() const
 void Channel::setFullName(const QString &fullName)
 {
     m_fullName = fullName;
+}
+
+int Channel::getFreq() const
+{
+    return m_freq;
+}
+
+void Channel::setFreq(int freq)
+{
+    if(m_freq != freq){
+        m_freq = freq;
+        Q_EMIT freqChanged();
+    }
+
 }
 

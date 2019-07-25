@@ -27,9 +27,11 @@ SOURCES += \
         sortfilterproxymodel.cpp \
         stripchartitem.cpp \
         tlistcontroller.cpp \
-        tubehandler.cpp
+        tubehandler.cpp \
+        tubeloader.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+    icons.qrc
 win32 {
 
     ## Windows common build here
@@ -76,5 +78,6 @@ HEADERS += \
     stripchartitem.h \
     tlistcontroller.h \
     tubehandler.h \
+    tubeloader.h \
     winsock2.h
 

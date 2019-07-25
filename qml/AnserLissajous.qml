@@ -42,78 +42,67 @@ Item {
 
     }
 
-    function updateSpan(){
-
-        if(lissajous.priChan){
-            var channel = lissajous.priChan;
-            var span = channel.span * channel.vcon;
-            spanBtn.text = String(span.toFixed(2));
-            lissajous.update();
-            updateExpWin();
-            spanChanged();
-        }else{
-            spanBtn.text = "";
-        }
-    }
-
-    function updateRot(){
-        rotBtn.text = lissajous.priChan? lissajous.priChan.rot.toString():"";
-        lissajous.update();
-        updateExpWin();
-        rotChanged();
-    }
 
     function updateLissAndExp(){
-        lissajous.priChan = tube.getChannel(channel);
-        updateExpWin()
+        var mode = switchChan.mode;
+        switchChan.channel = tube.getChannel(channel);
+        lissajous.clear();
+        expandStripChart.clear();
+        updateExpWin();
+        switch(mode){
+        case LissChanItem.ModeType.Current:
+            lissajous.pushData(tube.getChannel(channel), "green");
+            expandStripChart.updateChart(tube.getChannel(channel), "green");
+            break;
+        case LissChanItem.ModeType.History:
+            lissajous.pushData(tube.getHistChannel(channel), "red");
+            expandStripChart.updateChart(tube.getHistChannel(channel), "red");
+            break;
+        case LissChanItem.ModeType.Base:
+            lissajous.pushData(tube.getBaseChannel(channel), "blue");
+            expandStripChart.updateChart(tube.getBaseChannel(channel), "blue");
+            break;
+        case LissChanItem.ModeType.CH:
+            lissajous.pushData(tube.getChannel(channel), "green");
+            lissajous.pushData(tube.getHistChannel(channel), "red");
+            expandStripChart.updateChart(tube.getChannel(channel), "green");
+            expandStripChart.updateChart(tube.getHistChannel(channel), "red");
+            break;
+        case LissChanItem.ModeType.CB:
+            lissajous.pushData(tube.getChannel(channel), "green");
+            lissajous.pushData(tube.getBaseChannel(channel), "blue");
+            expandStripChart.updateChart(tube.getChannel(channel), "green");
+            expandStripChart.updateChart(tube.getBaseChannel(channel), "blue");
+            break;
+        case LissChanItem.ModeType.HB:
+            lissajous.pushData(tube.getHistChannel(channel), "red");
+            lissajous.pushData(tube.getBaseChannel(channel), "blue");
+            expandStripChart.updateChart(tube.getHistChannel(channel), "red");
+            expandStripChart.updateChart(tube.getBaseChannel(channel), "blue");
+            break;
+        case LissChanItem.ModeType.Combine:
+            lissajous.pushData(tube.getChannel(channel), "green");
+            lissajous.pushData(tube.getHistChannel(channel), "red");
+            lissajous.pushData(tube.getBaseChannel(channel), "blue");
+            expandStripChart.updateChart(tube.getChannel(channel), "green");
+            expandStripChart.updateChart(tube.getHistChannel(channel), "red");
+            expandStripChart.updateChart(tube.getBaseChannel(channel), "blue");
+            break;
+        }
+
+        //updateExpWin()
     }
 
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
 
-        RowLayout{
-            Layout.fillWidth: true
-            spacing: 0
-            SelectionBox{
-                id: spanBtn
-                width: 50
-                onWheeled: {
-                    if(lissajous.priChan){
-                        var span = lissajous.priChan.span;
-                        if(wheel.angleDelta.y < 0){
-                            span *= 2;
-                        }else{
-                            span /= 2;
-                        }
-                        span = lissajous.boundSpan(span)
-                        lissajous.priChan.span = span
-                    }
-                }
-            }
-            ChannelScroller{
-                id: switchChan
-                Layout.fillWidth: true
-            }
-            SelectionBox{
-                id: rotBtn
-                width: 50
-                onWheeled: {
-                    if(lissajous.priChan && (wheel.modifiers & Qt.ControlModifier)){
-                        var rot = lissajous.priChan.rot;
-                        if(wheel.angleDelta.y < 0){
-                            rot += 1;
-                        }else{
-                            rot -= 1;
-                        }
-                        if(rot < 0) rot = 359;
-                        if(rot > 359) rot = 0;
-                        lissajous.priChan.rot = rot
-                    }
-                }
-            }
-        }
 
+        LissChanItem{
+            id: switchChan
+            Layout.fillWidth: true
+            height: 50
+        }
         LissajousItem{
             id: lissajous
             fillColor: Global.LissajousColor
@@ -121,22 +110,47 @@ Item {
             Layout.fillHeight: true
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
+
+            MouseArea {
+                id: lissArea
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onMouseXChanged: toolTipLissajous.x = lissArea.mouseX + 15
+                onMouseYChanged: toolTipLissajous.y = lissArea.mouseY + 20
+            }
+
+            ToolTip {
+                id: toolTipLissajous
+                delay: 0
+                visible: lissArea.containsMouse && anserMain.showTooltip
+                contentItem: Text {
+                    textFormat: Text.RichText
+                    text:
+                        "<div>
+                            <header style='color:blue;font-weight:bold'>Lissajous</header>
+                            <table>
+                                <tr><td>&bull; LB</td><td>:</td><td>Make a measurement</td></tr>
+                                <tr><td>&bull; Shift + LB</td><td>:</td><td>Make a measurement 180 out</td></tr>
+                                <tr><td>&bull; Ctrl + LB</td><td>:</td><td>Make a measurement from balance point</td></tr>
+                                <tr><td>&bull; Alt + LB</td><td>:</td><td>Make a measurement on this channel only</td></tr>
+                            </table>
+                        </div>"
+                    font.pointSize: 14
+                    color: "#fd3a94"
+                }
+
+                background: Rectangle {
+                    color: "#fff68f"
+                    border.color: "#21be2b"
+                }
+            }
         }
-        Rectangle{
-            id: measBox
+
+
+        LissMeasItem{
             Layout.fillWidth: true
-            height: Global.MeasBoxHeight
-            Layout.alignment: Qt.AlignTop
-            color: Global.LissajousColor
-            border.color: Global.LissajousBorder
-        }
-        Rectangle{
-            id: utilitiesTool
-            Layout.fillWidth: true
-            height: Global.MeasBoxHeight
-            Layout.alignment: Qt.AlignTop
-            color: Global.LissajousColor
-            border.color: Global.LissajousBorder
+            height: 50
         }
         AnserExpandStripChart{
             id: expandStripChart
@@ -144,28 +158,32 @@ Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignBottom
             tube: lissajousItem.tube
-            channel: lissajousItem.channel            
+            channel: lissajousItem.channel
         }
     }
 
     Connections{
         target: switchChan
         onCurrentChanChanged:{
-            var chanObj = tube.getChannel(switchChan.currentChan)
-            if(chanObj){
-                switchChan.text = chanObj.fullName
-            }
             updateLissAndExp();
+        }
+        onModeChanged:{
+            updateLissAndExp();
+        }
+        onRotChanged:{
+            updateLissAndExp();
+            rotChanged();
+        }
+        onSpanChanged:{
+            updateLissAndExp();
+            spanChanged();
         }
     }
 
     Connections{
-        target: lissajous
-        onPriChanChanged:{
-            updateRot()
-            updateSpan()
-            lissajous.priChan.rotChanged.connect(updateRot);
-            lissajous.priChan.spanChanged.connect(updateSpan);
+        target: expandStripChart
+        onExpTpChanged: {
+            updateLissAndExp();
         }
     }
 

@@ -14,12 +14,12 @@ Item {
     property int channel
     property int expWin: 20
     property int expTp: -1
-    onExpTpChanged: {        
-        updateExpChart()
-    }
-    onChannelChanged: {
-        updateExpChart()
-    }
+//    onExpTpChanged: {
+//        updateExpChart()
+//    }
+//    onChannelChanged: {
+//        updateExpChart()
+//    }
 
     function requestUpdateExpWin(){
         winExpCanvas.requestPaint()
@@ -30,11 +30,29 @@ Item {
         winExpCanvas.requestPaint()
     }
 
+    function updateChart(channel, color){
+        xComp.expTp = expTp;
+        yComp.expTp = expTp;
+        xComp.pushData(channel, color);
+        yComp.pushData(channel, color);
+    }
+
+    function clear(){
+        xComp.clear();
+        yComp.clear();
+    }
+
     function updateExpChart(){
-        xComp.expTp = expTp
-        yComp.expTp = expTp
-        xComp.pushData(tube.getChannel(channel))
-        yComp.pushData(tube.getChannel(channel))
+//        xComp.expTp = expTp
+//        yComp.expTp = expTp
+//        xComp.clear();
+//        yComp.clear();
+//        xComp.pushData(tube.getChannel(channel))
+//        yComp.pushData(tube.getChannel(channel))
+//        if(anserMain.historyLoaded){
+//            xComp.pushData(tube.getHistChannel(channel))
+//            yComp.pushData(tube.getHistChannel(channel))
+//        }
         requestUpdateExpWin()
     }
 
@@ -42,19 +60,26 @@ Item {
         var ctx = winExpCanvas.getContext("2d")
         ctx.reset()
         ctx.lineWidth = 1;
-        ctx.strokeStyle = "red"
-        ctx.beginPath()
+        ctx.strokeStyle = "red";
+        ctx.beginPath();
         //draw center line
+        ctx.setLineDash([10, 5]);
         ctx.moveTo(0, xyComp.height/2);
-        ctx.lineTo(xyComp.width, xyComp.height/2)
+        ctx.lineTo(xyComp.width, xyComp.height/2);
+        ctx.stroke();
         //draw lower line
+        ctx.beginPath();
+        ctx.setLineDash([]);
         ctx.moveTo(0, xyComp.height/2 + expWin);
-        ctx.lineTo(xyComp.width, xyComp.height/2 + expWin)
+        ctx.lineTo(xyComp.width, xyComp.height/2 + expWin);
+        ctx.stroke();
         //draw upper line
+        ctx.beginPath();
+        ctx.setLineDash([]);
         ctx.moveTo(0, xyComp.height/2 - expWin);
-        ctx.lineTo(xyComp.width, xyComp.height/2 - expWin)
+        ctx.lineTo(xyComp.width, xyComp.height/2 - expWin);
 
-        ctx.stroke()
+        ctx.stroke();
     }
 
     Rectangle{

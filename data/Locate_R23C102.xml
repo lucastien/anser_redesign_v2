@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<autolocate>
+<landmark>
+    <name>TEH</name>
+	<pt0>26031</pt0>
+	<npt>23</npt>
+</landmark>
+<landmark>
+    <name>TSH</name>
+	<pt0>25286</pt0>
+	<npt>17</npt>
+</landmark>
+<landmark>
+    <name>01H</name>
+	<pt0>24539</pt0>
+	<npt>52</npt>
+</landmark>
+<landmark>
+    <name>02H</name>
+	<pt0>23835</pt0>
+	<npt>54</npt>
+</landmark>
+<landmark>
+    <name>03H</name>
+	<pt0>22378</pt0>
+	<npt>56</npt>
+</landmark>
+<landmark>
+    <name>04H</name>
+	<pt0>20922</pt0>
+	<npt>57</npt>
+</landmark>
+<landmark>
+    <name>05H</name>
+	<pt0>19449</pt0>
+	<npt>90</npt>
+</landmark>
+<landmark>
+    <name>06H</name>
+	<pt0>17994</pt0>
+	<npt>89</npt>
+</landmark>
+<landmark>
+    <name>07H</name>
+	<pt0>16534</pt0>
+	<npt>89</npt>
+</landmark>
+<landmark>
+    <name>08H</name>
+	<pt0>15068</pt0>
+	<npt>90</npt>
+</landmark>
+<landmark>
+    <name>AV1</name>
+	<pt0>14424</pt0>
+	<npt>75</npt>
+</landmark>
+<landmark>
+    <name>AV2</name>
+	<pt0>13786</pt0>
+	<npt>75</npt>
+</landmark>
+<landmark>
+    <name>AV5</name>
+	<pt0>13450</pt0>
+	<npt>74</npt>
+</landmark>
+<landmark>
+    <name>AV6</name>
+	<pt0>12841</pt0>
+	<npt>70</npt>
+</landmark>
+<landmark>
+    <name>08C</name>
+	<pt0>12165</pt0>
+	<npt>94</npt>
+</landmark>
+<landmark>
+    <name>07C</name>
+	<pt0>10744</pt0>
+	<npt>94</npt>
+</landmark>
+<landmark>
+    <name>06C</name>
+	<pt0>9297</pt0>
+	<npt>96</npt>
+</landmark>
+<landmark>
+    <name>05C</name>
+	<pt0>7853</pt0>
+	<npt>92</npt>
+</landmark>
+<landmark>
+    <name>04C</name>
+	<pt0>6430</pt0>
+	<npt>53</npt>
+</landmark>
+<landmark>
+    <name>03C</name>
+	<pt0>4979</pt0>
+	<npt>55</npt>
+</landmark>
+<landmark>
+    <name>02C</name>
+	<pt0>3525</pt0>
+	<npt>55</npt>
+</landmark>
+<landmark>
+    <name>01C</name>
+	<pt0>2828</pt0>
+	<npt>52</npt>
+</landmark>
+<landmark>
+    <name>TSC</name>
+	<pt0>2090</pt0>
+	<npt>18</npt>
+</landmark>
+<landmark>
+    <name>TEC</name>
+	<pt0>1338</pt0>
+	<npt>28</npt>
+</landmark>
+</autolocate>

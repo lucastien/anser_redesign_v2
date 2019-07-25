@@ -1,0 +1,33 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/tlist/TlistWindow.qml</file>
+        <file>qml/tlist/TlistDiskTableView.qml</file>
+        <file>qml/tlist/TlistMenuBar.qml</file>
+        <file>qml/tlist/TlistReelInfoTableView.qml</file>
+        <file>qml/tlist/TlistRightPanel.qml</file>
+        <file>qml/tlist/TlistServerKeyComponent.qml</file>
+        <file>qml/tlist/TlistServerKeyDialog.qml</file>
+        <file>qml/tlist/TlistToolbar.qml</file>
+        <file>qml/AnserBodyContent.qml</file>
+        <file>qml/AnserFooterBar.qml</file>
+        <file>qml/AnserMain.qml</file>
+        <file>qml/AnserMenuBar.qml</file>
+        <file>qml/AnserToolBar.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>qml/AnserToolButton.qml</file>
+        <file>qml/base/AnserTableStyle.qml</file>
+        <file>qml/AnserStripChart.qml</file>
+        <file>qml/AnserExpandStripChart.qml</file>
+        <file>qml/AnserLissajous.qml</file>
+        <file>qml/StatusBar.qml</file>
+        <file>qml/AnserLocBar.qml</file>
+        <file>qml/ChannelScroller.qml</file>
+        <file>qml/js/AnserGlobal.js</file>
+        <file>qml/base/SelectionBox.qml</file>
+        <file>qml/base/AnserTableView.qml</file>
+        <file>qml/base/TableTextContent.qml</file>
+        <file>qml/js/CreateServerKeyButtonsComponent.js</file>
+		<file>data/003021999999.T</file>
+		<file>data/005021023102.T</file>
+    </qresource>
+</RCC>

@@ -115,6 +115,17 @@ void SortFilterProxyModel::setSGFilterString(const QString &filter)
     invalidateFilter();
 }
 
+QString SortFilterProxyModel::unitFilterString() const
+{
+    return unitRegExp.pattern();
+}
+
+void SortFilterProxyModel::setUnitFilterString(const QString &filter)
+{
+    unitRegExp.setPattern(filter);
+    invalidateFilter();
+}
+
 QString SortFilterProxyModel::legFilterString() const
 {
     return legRegExp.pattern();
@@ -122,6 +133,17 @@ QString SortFilterProxyModel::legFilterString() const
 void SortFilterProxyModel::setLegFilterString(const QString &filter)
 {
     legRegExp.setPattern(filter);
+    invalidateFilter();
+}
+
+QString SortFilterProxyModel::reelFilterString() const
+{
+    return reelRegExp.pattern();
+}
+
+void SortFilterProxyModel::setReelFilterString(const QString &filter)
+{
+    reelRegExp.setPattern(filter);
     invalidateFilter();
 }
 

@@ -12,11 +12,14 @@ Rectangle{
     property alias text: switchBtn.text
     signal clicked(int mouseButton)
     signal wheeled(var wheel)
+    property alias mouseHover: mouseChan.containsMouse
+    property alias mouseX: mouseChan.mouseX
+    property alias mouseY: mouseChan.mouseY
 
     Label{
         id: switchBtn
         font.bold: true
-        font.pointSize: 12
+        font.pointSize: 10
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
         anchors.fill: parent

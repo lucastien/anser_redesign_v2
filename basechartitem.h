@@ -18,25 +18,24 @@ public:
     void setBorderColor(const QColor &borderColor);
     // QQuickPaintedItem interface
     virtual void paint(QPainter *painter);
-    Q_INVOKABLE virtual void pushData(Channel* channel);
-    bool multiYearMode() const;
-    void setMultiYearMode(bool multiYearMode);
+    Q_INVOKABLE virtual void pushData(Channel* channel, const QColor& color = "white" );
     virtual bool transform() = 0;
     QColor penColor() const;
     void setPenColor(const QColor &penColor);
-
+    Q_INVOKABLE Channel *at(const int idx);
+    Q_INVOKABLE void clear();
 signals:
     void borderColorChanged();
     void penColorChanged();
 protected:
     typedef QMap<QString, QVector<QPointF>> LissPointMap;
     typedef QMap<QString, Channel*> LissDataMap;
-
-    bool m_multiYearMode;
+    typedef QMap<QString, QColor> LissColorMap;
     LissDataMap m_data; //support draw multiple data set with key = year
     LissPointMap m_points;
     QColor m_borderColor;
     QColor m_penColor;
+    LissColorMap m_colors;
 };
 
 #endif // BASECHARTITEM_H
