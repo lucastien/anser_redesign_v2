@@ -76,8 +76,6 @@ MenuBar{
 
     Menu{
         title: qsTr("TOOL")
-
-
     }
 
 }

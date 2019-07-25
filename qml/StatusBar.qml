@@ -49,6 +49,22 @@ Pane {
            }
         }
 
+        Image{
+            source: "qrc:/images/icons/layout.png"
+            Layout.preferredHeight: parent.height
+            Layout.preferredWidth: parent.height
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if(layoutMenu.visible){
+                        layoutMenu.close();
+                    }else{
+                        layoutMenu.open();
+                    }
+                }
+           }
+        }
+
 
         ToolSeparator {
             padding: 0

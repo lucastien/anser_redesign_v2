@@ -41,7 +41,7 @@ ApplicationWindow {
         id: toolMenu
         //width: 200
         //height: 100
-        x: anserFooterBar.x + 10
+        x: anserFooterBar.x + 50
         y: anserFooterBar.y - 165
         MenuItem{
             icon.source: "qrc:/images/icons/report.png"
@@ -60,6 +60,62 @@ ApplicationWindow {
             text: "Screening"
         }
     }
+
+    Menu{
+        id: layoutMenu
+        x: anserFooterBar.x + 90
+        y: anserFooterBar.y - 110
+
+        ColumnLayout{
+            anchors.centerIn: parent
+            anchors.fill: parent
+            RowLayout{
+
+                spacing: 5
+                Label{
+                    text: "Strip Num:"
+                }
+
+                SpinBox{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    value: 1
+                }
+
+            }
+            RowLayout{
+                //anchors.fill: parent
+                spacing: 5
+                Label{
+                    text: "Liss Cols:"
+                }
+
+                SpinBox{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    value: 1
+                }
+
+            }
+            RowLayout{
+                //anchors.fill: parent
+                spacing: 5
+                Label{
+                    text: "Liss Rows:"
+                }
+                SpinBox{
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    value: 1
+                }
+
+            }
+
+
+        }
+
+    }
+
 
     AnserBodyContent{
         id: content

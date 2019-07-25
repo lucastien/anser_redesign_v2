@@ -20,5 +20,6 @@
         <file>images/icons/ic_menu_24px.svg</file>
         <file>images/icons/ic_menu_36px.svg</file>
         <file>images/icons/ic_menu_48px.svg</file>
+        <file>images/icons/layout.png</file>
     </qresource>
 </RCC>
