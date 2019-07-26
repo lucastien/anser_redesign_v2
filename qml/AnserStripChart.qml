@@ -92,7 +92,7 @@ Item {
                 id: cursorRect
                 width: stripArea.width
                 height: Global.ChannelBoxHeight
-                color: "#e60707"
+                color: "red"
                 opacity: 0.5
                 x: 0
                 y: stripArea.height/2

@@ -5,7 +5,7 @@ import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.3
 import TubeHandler 1.0
 import "tlist"
-
+import "base" as Base
 ApplicationWindow {
     id: anserMain
     visible: true
@@ -16,7 +16,7 @@ ApplicationWindow {
     property alias showTooltip: menubar.showTooltip
 
 
-    menuBar: AnserMenuBar{
+    menuBar: Base.AnserMenuBar/*AnserMenuBar*/{
         id:menubar
     }
 

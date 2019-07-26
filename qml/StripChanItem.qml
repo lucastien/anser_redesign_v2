@@ -47,13 +47,13 @@ Item {
                     chan = 9;
             }
 
-            onMouseXChanged: toolTip.x = mouseX
-            onMouseYChanged: toolTip.y = mouseY
+            onMouseXChanged: toolTip.x = mouseX + 15
+            onMouseYChanged: toolTip.y = mouseY + 20
 
             ToolTip {
                 id: toolTip
                 delay: 0
-                visible: mouseHover && anserMain.showTooltip
+                visible: chanSelect.mouseHover && anserMain.showTooltip
                 contentItem: Text {
                     textFormat: Text.RichText
                     text:

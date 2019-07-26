@@ -44,7 +44,7 @@ Item {
             var npt = model.get(i).npt;
             var px = dptToPixel(pt0 + npt/2);
             var rect = npt/scale;
-            console.log("Name = " + name + ", pt0 = " + pt0 + ", npt = " + npt + ", px = " + px);
+            //console.log("Name = " + name + ", pt0 = " + pt0 + ", npt = " + npt + ", px = " + px);
             ctx.beginPath();
             ctx.strokeStyle = "white";
             ctx.lineWidth = 1.5;
@@ -54,7 +54,7 @@ Item {
             ctx.fillStyle = "white";
             ctx.fillText(name, 12, px+4);
             ctx.fillStyle = "yellow";
-            ctx.fillRect(locCanvas.width - 30, px - rect/2, 30, rect);
+            ctx.fillRect(locCanvas.width - 20, px - rect/2, 20, rect);
         }
 
     }

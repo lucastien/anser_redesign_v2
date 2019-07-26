@@ -9,7 +9,7 @@ Item {
     id: stripContentItem
     property TubeHandler tube
 
-    property int numStrip: 3
+    property int numStrip: 2
     property int numLiss: 3
     property int centerCursor: stripRepeater.itemAt(0).cursorY +  stripRepeater.itemAt(0).cursorWidth/2 //the current center of the cursor on strip chart
 

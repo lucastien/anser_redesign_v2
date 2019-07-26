@@ -11,7 +11,6 @@
         <file>qml/AnserBodyContent.qml</file>
         <file>qml/AnserFooterBar.qml</file>
         <file>qml/AnserMain.qml</file>
-        <file>qml/AnserMenuBar.qml</file>
         <file>qml/AnserToolBar.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>qml/AnserToolButton.qml</file>
@@ -39,5 +38,8 @@
         <file>data/Locate_R23C102.xml</file>
         <file>qml/AnserTlistItem.qml</file>
         <file>qml/tlist/ReelTabItem.qml</file>
+        <file>qml/base/AnserMenuBar.qml</file>
+        <file>qml/base/+nativemenubar/AnserMenuBar.qml</file>
+        <file>qml/base/AnserToolTip.qml</file>
     </qresource>
 </RCC>

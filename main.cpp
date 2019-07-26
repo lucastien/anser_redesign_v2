@@ -5,6 +5,7 @@
 #include <QQmlContext>
 #include <QDebug>
 #include <QFontDatabase>
+#include <QQmlFileSelector>
 #include <QtWidgets/QApplication>
 
 #include "disktablemodel.h"
@@ -26,7 +27,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Westinghouse");
     app.setApplicationName("Tlist");
     app.setOrganizationDomain("westinghouse");
-    app.setApplicationDisplayName("Tlist - Demo");
+    app.setApplicationDisplayName("G7810 - RES");
     app.setApplicationVersion("1.1");
 
     qmlRegisterType<SortFilterProxyModel>("SortFilterProxyModel", 1, 0, "SortFilterProxyModel");
@@ -57,7 +58,10 @@ int main(int argc, char *argv[])
     tlistController.setReelModel(&reelModel);
     engine.rootContext()->setContextProperty("reelModel", &reelModel);
 
-
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
+    QQmlFileSelector fileSelector(&engine);
+    fileSelector.setExtraSelectors(QStringList() << QLatin1String("nativemenubar"));
+#endif
 
     engine.load(url);
 
