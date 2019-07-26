@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.12
+import QtQuick.Dialogs 1.2
 
 import "qrc:/Icon.js" as MdiFont
 
@@ -67,6 +68,7 @@ Pane {
         }
 
 
+
         ToolSeparator {
             padding: 0
             Layout.fillHeight: true
@@ -120,6 +122,7 @@ Pane {
         }
 
         Rectangle{
+            id: messageBox
             Layout.fillHeight: true
             color: "red"
             width: 500

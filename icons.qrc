@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>materialdesignicons-webfont.ttf</file>
-        <file>Icon.js</file>
         <file>images/icons/ic_keyboard_arrow_down_24px.svg</file>
         <file>images/icons/ic_keyboard_arrow_left_24px.svg</file>
         <file>images/icons/ic_keyboard_arrow_right_24px.svg</file>
@@ -24,5 +23,6 @@
         <file>images/icons/cancel.png</file>
         <file>images/icons/info.png</file>
         <file>images/icons/warning.png</file>
+        <file>Icon.js</file>
     </qresource>
 </RCC>

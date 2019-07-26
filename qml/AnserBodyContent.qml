@@ -65,6 +65,19 @@ Item {
         }
     }
 
+    Connections{
+        target:  anserMain
+        onStripNumChanged:{
+            numStrip = value;
+            console.log("Number of strip: " + numStrip);
+        }
+        onLissColumnChanged:{
+            numLiss = value;
+            console.log("Number of liss column: " + numLiss);
+        }
+    }
+
+
 
     RowLayout{
         spacing: 0

@@ -51,42 +51,42 @@ Item {
         updateExpWin();
         switch(mode){
         case LissChanItem.ModeType.Current:
-            lissajous.pushData(tube.getChannel(channel), "green");
-            expandStripChart.updateChart(tube.getChannel(channel), "green");
+            lissajous.pushData(tube.getChannel(channel), anserMain.currentColor);
+            expandStripChart.updateChart(tube.getChannel(channel), anserMain.currentColor);
             break;
         case LissChanItem.ModeType.History:
-            lissajous.pushData(tube.getHistChannel(channel), "red");
-            expandStripChart.updateChart(tube.getHistChannel(channel), "red");
+            lissajous.pushData(tube.getHistChannel(channel), anserMain.historyColor);
+            expandStripChart.updateChart(tube.getHistChannel(channel), anserMain.historyColor);
             break;
         case LissChanItem.ModeType.Base:
-            lissajous.pushData(tube.getBaseChannel(channel), "blue");
-            expandStripChart.updateChart(tube.getBaseChannel(channel), "blue");
+            lissajous.pushData(tube.getBaseChannel(channel), anserMain.baseColor);
+            expandStripChart.updateChart(tube.getBaseChannel(channel), anserMain.baseColor);
             break;
         case LissChanItem.ModeType.CH:
-            lissajous.pushData(tube.getChannel(channel), "green");
-            lissajous.pushData(tube.getHistChannel(channel), "red");
-            expandStripChart.updateChart(tube.getChannel(channel), "green");
-            expandStripChart.updateChart(tube.getHistChannel(channel), "red");
+            lissajous.pushData(tube.getChannel(channel), anserMain.currentColor);
+            lissajous.pushData(tube.getHistChannel(channel), anserMain.historyColor);
+            expandStripChart.updateChart(tube.getChannel(channel), anserMain.currentColor);
+            expandStripChart.updateChart(tube.getHistChannel(channel), anserMain.historyColor);
             break;
         case LissChanItem.ModeType.CB:
-            lissajous.pushData(tube.getChannel(channel), "green");
-            lissajous.pushData(tube.getBaseChannel(channel), "blue");
-            expandStripChart.updateChart(tube.getChannel(channel), "green");
-            expandStripChart.updateChart(tube.getBaseChannel(channel), "blue");
+            lissajous.pushData(tube.getChannel(channel), anserMain.currentColor);
+            lissajous.pushData(tube.getBaseChannel(channel), anserMain.baseColor);
+            expandStripChart.updateChart(tube.getChannel(channel), anserMain.currentColor);
+            expandStripChart.updateChart(tube.getBaseChannel(channel), anserMain.baseColor);
             break;
         case LissChanItem.ModeType.HB:
-            lissajous.pushData(tube.getHistChannel(channel), "red");
-            lissajous.pushData(tube.getBaseChannel(channel), "blue");
-            expandStripChart.updateChart(tube.getHistChannel(channel), "red");
-            expandStripChart.updateChart(tube.getBaseChannel(channel), "blue");
+            lissajous.pushData(tube.getHistChannel(channel), anserMain.historyColor);
+            lissajous.pushData(tube.getBaseChannel(channel), anserMain.baseColor);
+            expandStripChart.updateChart(tube.getHistChannel(channel), anserMain.historyColor);
+            expandStripChart.updateChart(tube.getBaseChannel(channel), anserMain.baseColor);
             break;
         case LissChanItem.ModeType.Combine:
-            lissajous.pushData(tube.getChannel(channel), "green");
-            lissajous.pushData(tube.getHistChannel(channel), "red");
-            lissajous.pushData(tube.getBaseChannel(channel), "blue");
-            expandStripChart.updateChart(tube.getChannel(channel), "green");
-            expandStripChart.updateChart(tube.getHistChannel(channel), "red");
-            expandStripChart.updateChart(tube.getBaseChannel(channel), "blue");
+            lissajous.pushData(tube.getChannel(channel), anserMain.currentColor);
+            lissajous.pushData(tube.getHistChannel(channel), anserMain.historyColor);
+            lissajous.pushData(tube.getBaseChannel(channel), anserMain.baseColor);
+            expandStripChart.updateChart(tube.getChannel(channel), anserMain.currentColor);
+            expandStripChart.updateChart(tube.getHistChannel(channel), anserMain.historyColor);
+            expandStripChart.updateChart(tube.getBaseChannel(channel), anserMain.baseColor);
             break;
         }
 

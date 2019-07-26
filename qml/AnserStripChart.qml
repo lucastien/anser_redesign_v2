@@ -32,30 +32,30 @@ Item {
             chanScoller.channel = tube.getChannel(currentChan);
             switch(mode){
             case StripChanItem.ModeType.Current:
-                stripArea.pushData(tube.getChannel(currentChan), "green");
+                stripArea.pushData(tube.getChannel(currentChan), anserMain.currentColor);
                 break;
             case StripChanItem.ModeType.History:
-                stripArea.pushData(tube.getHistChannel(currentChan), "red");
+                stripArea.pushData(tube.getHistChannel(currentChan), anserMain.historyColor);
                 break;
             case StripChanItem.ModeType.Base:
-                stripArea.pushData(tube.getBaseChannel(currentChan), "blue");
+                stripArea.pushData(tube.getBaseChannel(currentChan), anserMain.baseColor);
                 break;
             case StripChanItem.ModeType.CH:
-                stripArea.pushData(tube.getChannel(currentChan), "green");
-                stripArea.pushData(tube.getHistChannel(currentChan), "red");
+                stripArea.pushData(tube.getChannel(currentChan), anserMain.currentColor);
+                stripArea.pushData(tube.getHistChannel(currentChan), anserMain.historyColor);
                 break;
             case StripChanItem.ModeType.CB:
-                stripArea.pushData(tube.getChannel(currentChan), "green");
-                stripArea.pushData(tube.getBaseChannel(currentChan), "blue");
+                stripArea.pushData(tube.getChannel(currentChan), anserMain.currentColor);
+                stripArea.pushData(tube.getBaseChannel(currentChan), anserMain.baseColor);
                 break;
             case StripChanItem.ModeType.HB:
-                stripArea.pushData(tube.getHistChannel(currentChan), "red");
-                stripArea.pushData(tube.getBaseChannel(currentChan), "blue");
+                stripArea.pushData(tube.getHistChannel(currentChan), anserMain.historyColor);
+                stripArea.pushData(tube.getBaseChannel(currentChan), anserMain.baseColor);
                 break;
             case StripChanItem.ModeType.Combine:
-                stripArea.pushData(tube.getChannel(currentChan), "green");
-                stripArea.pushData(tube.getHistChannel(currentChan), "red");
-                stripArea.pushData(tube.getBaseChannel(currentChan), "blue");
+                stripArea.pushData(tube.getChannel(currentChan), anserMain.currentColor);
+                stripArea.pushData(tube.getHistChannel(currentChan), anserMain.historyColor);
+                stripArea.pushData(tube.getBaseChannel(currentChan), anserMain.baseColor);
                 break;
             }
         }

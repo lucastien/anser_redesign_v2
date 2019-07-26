@@ -3,6 +3,8 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs 1.2
+
 import TubeHandler 1.0
 import "tlist"
 import "base" as Base
@@ -15,7 +17,12 @@ ApplicationWindow {
 	property bool historyLoaded: false
     property alias showTooltip: menubar.showTooltip
 
+    property alias currentColor: currentYearColor.color
+    property alias historyColor: historyYearColor.color
+    property alias baseColor: baseYearColor.color
 
+    signal stripNumChanged(int value)
+    signal lissColumnChanged(int value)
     menuBar: Base.AnserMenuBar/*AnserMenuBar*/{
         id:menubar
     }
@@ -24,6 +31,18 @@ ApplicationWindow {
         id: toolbar
         visible: false;
     }    
+
+    onCurrentColorChanged: {
+        updateStripAndLiss();
+    }
+
+    onHistoryColorChanged: {
+        updateStripAndLiss();
+    }
+
+    onBaseColorChanged: {
+        updateStripAndLiss();
+    }
 
     function updateStripAndLiss(){
         content.updateScreen();
@@ -61,14 +80,50 @@ ApplicationWindow {
         }
     }
 
+    ColorDialog {
+        id: colorDialog
+        title: "Please choose a color"
+        modality : Qt.WindowModal
+
+        property bool currentYear: false
+        property bool historyYear: false
+        property bool baseYear: false
+        onAccepted: {
+            console.log("You chose: " + colorDialog.color)
+            if(currentYear){
+                currentYearColor.color = colorDialog.color
+            }else if(historyYear){
+                historyYearColor.color = colorDialog.color;
+            }else if(baseYear){
+                baseYearColor.color = colorDialog.color;
+            }
+            close();
+        }
+        onRejected: {
+            console.log("Canceled")
+            close();
+        }
+        //Component.onCompleted: visible = true
+    }
+
     Menu{
         id: layoutMenu
         x: anserFooterBar.x + 90
-        y: anserFooterBar.y - 110
+        y: anserFooterBar.y - 150
+
+        height:170
 
         ColumnLayout{
-            anchors.centerIn: parent
+            //anchors.centerIn: parent
             anchors.fill: parent
+            anchors.leftMargin: 5
+            //anchors.topMargin: 10
+            //anchors.topMargin: 20
+            //Layout.leftMargin: 5
+            spacing: 5
+            Item{
+                Layout.fillHeight: true
+            }
             RowLayout{
 
                 spacing: 5
@@ -77,9 +132,13 @@ ApplicationWindow {
                 }
 
                 SpinBox{
+                    id: stripNum
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    value: 1
+                    value: 2
+                    from: 1
+                    to: 10
+                    onValueChanged: anserMain.stripNumChanged(value)
                 }
 
             }
@@ -91,9 +150,13 @@ ApplicationWindow {
                 }
 
                 SpinBox{
+                    id: lissColumnNum
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    value: 1
+                    value: 3
+                    from: 1
+                    to: 10
+                    onValueChanged: anserMain.lissColumnChanged(value)
                 }
 
             }
@@ -104,12 +167,94 @@ ApplicationWindow {
                     text: "Liss Rows:"
                 }
                 SpinBox{
+                    id: lissRowNum
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     value: 1
+                    from: 1
+                    to: 5
                 }
 
             }
+
+            RowLayout{
+                //anchors.fill: parent
+                spacing: 5
+                Label{
+                    text: "Current Color:"
+                }
+                Rectangle{
+                    id: currentYearColor
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: "green"
+                    MouseArea{
+                        anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton
+                        onClicked: {
+                            colorDialog.currentYear = true;
+                            colorDialog.historyYear = false;
+                            colorDialog.baseYear = false;
+                            colorDialog.open();
+                        }
+                    }
+                }
+
+            }
+
+            RowLayout{
+                //anchors.fill: parent
+                spacing: 5
+                Label{
+                    text: "History Color:"
+                }
+                Rectangle{
+                    id: historyYearColor
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: "red"
+                    MouseArea{
+                        anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton
+                        onClicked: {
+                            colorDialog.currentYear = false;
+                            colorDialog.historyYear = true;
+                            colorDialog.baseYear = false;
+                            colorDialog.open();
+                        }
+                    }
+                }
+
+            }
+
+            RowLayout{
+                //anchors.fill: parent
+                spacing: 5
+                Label{
+                    text: "Base Color:"
+                }
+                Rectangle{
+                    id: baseYearColor
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: "blue"
+                    MouseArea{
+                        anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton
+                        onClicked: {
+                            colorDialog.currentYear = false;
+                            colorDialog.historyYear = false;
+                            colorDialog.baseYear = true;
+                            colorDialog.open();
+                        }
+                    }
+                }
+
+
+            }
+
+
+
 
 
         }
@@ -183,7 +328,7 @@ ApplicationWindow {
 
     Menu{
         id: historyMessageMenu
-        x: anserFooterBar.x + 660
+        x: anserFooterBar.x + 1220
         y: anserFooterBar.y - 150
         width: 500
         height: 150
