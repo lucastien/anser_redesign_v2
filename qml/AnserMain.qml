@@ -3,7 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.12
 import QtQuick.Layouts 1.3
-import QtQuick.Dialogs 1.2
+//import QtQuick.Dialogs 1.2
 
 import TubeHandler 1.0
 import "tlist"
@@ -80,31 +80,31 @@ ApplicationWindow {
         }
     }
 
-    ColorDialog {
-        id: colorDialog
-        title: "Please choose a color"
-        modality : Qt.WindowModal
+//    ColorDialog {
+//        id: colorDialog
+//        title: "Please choose a color"
+//        modality : Qt.WindowModal
 
-        property bool currentYear: false
-        property bool historyYear: false
-        property bool baseYear: false
-        onAccepted: {
-            console.log("You chose: " + colorDialog.color)
-            if(currentYear){
-                currentYearColor.color = colorDialog.color
-            }else if(historyYear){
-                historyYearColor.color = colorDialog.color;
-            }else if(baseYear){
-                baseYearColor.color = colorDialog.color;
-            }
-            close();
-        }
-        onRejected: {
-            console.log("Canceled")
-            close();
-        }
-        //Component.onCompleted: visible = true
-    }
+//        property bool currentYear: false
+//        property bool historyYear: false
+//        property bool baseYear: false
+//        onAccepted: {
+//            console.log("You chose: " + colorDialog.color)
+//            if(currentYear){
+//                currentYearColor.color = colorDialog.color
+//            }else if(historyYear){
+//                historyYearColor.color = colorDialog.color;
+//            }else if(baseYear){
+//                baseYearColor.color = colorDialog.color;
+//            }
+//            close();
+//        }
+//        onRejected: {
+//            console.log("Canceled")
+//            close();
+//        }
+//        //Component.onCompleted: visible = true
+//    }
 
     Menu{
         id: layoutMenu
@@ -192,10 +192,10 @@ ApplicationWindow {
                         anchors.fill: parent
                         acceptedButtons: Qt.LeftButton
                         onClicked: {
-                            colorDialog.currentYear = true;
-                            colorDialog.historyYear = false;
-                            colorDialog.baseYear = false;
-                            colorDialog.open();
+//                            colorDialog.currentYear = true;
+//                            colorDialog.historyYear = false;
+//                            colorDialog.baseYear = false;
+//                            colorDialog.open();
                         }
                     }
                 }
@@ -217,10 +217,10 @@ ApplicationWindow {
                         anchors.fill: parent
                         acceptedButtons: Qt.LeftButton
                         onClicked: {
-                            colorDialog.currentYear = false;
-                            colorDialog.historyYear = true;
-                            colorDialog.baseYear = false;
-                            colorDialog.open();
+//                            colorDialog.currentYear = false;
+//                            colorDialog.historyYear = true;
+//                            colorDialog.baseYear = false;
+//                            colorDialog.open();
                         }
                     }
                 }
@@ -242,10 +242,10 @@ ApplicationWindow {
                         anchors.fill: parent
                         acceptedButtons: Qt.LeftButton
                         onClicked: {
-                            colorDialog.currentYear = false;
-                            colorDialog.historyYear = false;
-                            colorDialog.baseYear = true;
-                            colorDialog.open();
+//                            colorDialog.currentYear = false;
+//                            colorDialog.historyYear = false;
+//                            colorDialog.baseYear = true;
+//                            colorDialog.open();
                         }
                     }
                 }
